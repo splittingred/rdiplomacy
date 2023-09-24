@@ -10,7 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_20_213354) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_24_184058) do
+  create_table "borders", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "variant_id", null: false
+    t.integer "from_territory_id", null: false
+    t.integer "to_territory_id", null: false
+    t.boolean "sea_passable", default: false, null: false
+    t.boolean "land_passable", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["from_territory_id"], name: "index_borders_on_from_territory_id"
+    t.index ["to_territory_id"], name: "index_borders_on_to_territory_id"
+    t.index ["variant_id"], name: "index_borders_on_variant_id"
+  end
+
   create_table "countries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "game_id", null: false
     t.bigint "current_player_id", null: false

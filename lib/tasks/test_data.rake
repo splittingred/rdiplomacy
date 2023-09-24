@@ -8,24 +8,15 @@ namespace :test_data do
 
     # @type [Games::Service] games_service
     games_service = ::Rdiplomacy::Container['games.service']
-
-    variant_name = 'classic'
-    variant_file = Rails.root.join('app', 'configuration', 'variants', "#{variant_name}.yml")
-    Rails.logger.info "Loading variant at #{variant_file}"
-
-    # create variant
-    variant_yml = YAML.safe_load_file(variant_file)
-    variant = ::Variant.by_abbr(variant_yml['abbr']).first_or_initialize
-    variant.name = variant_yml['name']
-    variant.abbr = variant_yml['abbr']
-    variant.description = variant_yml['description']
-    variant.save!
+    variants_service = ::Rdiplomacy::Container['variants.service']
+    variant = variants_service.import!(name: 'classic').value_or do |err|
+      fail "Failed to import classic variant: #{err.message}"
+    end
 
     # create game record
     game_file = Rails.root.join('lib', 'test_cases', variant_name, '1.yml')
     Rails.logger.info "Loading game at #{game_file}"
     game_yml = YAML.safe_load_file(game_file)
-    game = Game.for_variant(variant).with_name(game_yml['name']).first_or_create!
 
     req = ::Games::Commands::Setup::Request.new(
       name: game_yml['name'],

@@ -1,0 +1,60 @@
+<div data-controller="game-map">
+<div class="row">
+  <div class="col-6">
+    <div id="map-season">
+      <div class="btn-group btn-group-sm" id="game-history-controls" role="group" aria-label="Game History Controls">
+        <a class="btn btn-secondary btn-history disabled" id="history_previous_season" href="#"><i class="fas fa-arrow-left"></i></a>
+        <a class="btn btn-secondary btn-history" id="history_current_season" href="#" data-bs-toggle="modal"><%= @view.turn.season %> <%= @view.turn.year %> <i class="fas fa-arrow-down"></i></a>
+        <a class="btn btn-secondary btn-history disabled" id="history_next_season" href="#"><i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="map" id="map-container">
+      <%= @view.map %>
+    </div>
+  </div>
+  <div class="col-6">
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-game-orders-tab" data-toggle="tab" href="#nav-game-orders" role="tab" aria-controls="nav-game-orders" aria-selected="true">Orders</a>
+        <a class="nav-item nav-link" id="nav-game-info-tab" data-toggle="tab" href="#nav-game-info" role="tab" aria-controls="nav-game-info" aria-selected="false">Info</a>
+        <a class="nav-item nav-link" id="nav-game-sandboxes-tab" data-toggle="tab" href="#nav-game-sandboxes" role="tab" aria-controls="nav-game-sandboxes" aria-selected="false">Sandboxes</a>
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-game">
+      <div class="tab-pane fade show active p-2" id="nav-game-orders" role="tabpanel" aria-labelledby="nav-game-orders-tab">
+        <h2>Orders</h2>
+
+        <div class="order-register small">
+        <% @view.orders.countries.each do |country_abbr, orders| %>
+          <h6><%= country_abbr.to_s.upcase %></h6>
+          <ul class="m-0">
+          <% orders.each do |order| %>
+            <li
+              data-order-country="<%= country_abbr %>"
+              data-order-unit-type="<%= order.unit_type %>"
+              data-order-move-type="<%= order.move_type %>"
+              data-order-from-territory-abbr="<%= order.from_territory_abbr %>"
+              data-order-to-territory-abbr="<%= order.to_territory_abbr %>"
+              data-order-assistance-territory-abbr="<%= order.assistance_territory_abbr %>"
+            ><%= order.order_string %></li>
+          <% end %>
+          </ul>
+        <% end %>
+        </div>
+      </div>
+      <div class="tab-pane fade p-2" id="nav-game-info" role="tabpanel" aria-labelledby="nav-game-info-tab">
+        <h2>Info</h2>
+      </div>
+      <div class="tab-pane fade p-2" id="nav-game-sandboxes" role="tabpanel" aria-labelledby="nav-game-sandboxes-tab">
+        <h2>Sandboxes</h2>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<script type="text/javascript">
+  window.rDipUnits = <%= @view.units.to_json.html_safe %>
+  window.rDipTerritories = <%= @view.territories.to_json.html_safe %>
+</script>

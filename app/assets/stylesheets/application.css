@@ -13,3 +13,21 @@
  *= require_tree .
  *= require_self
  */
+.tab-content {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+}
+
+.nav-tabs {
+    margin-bottom: 0;
+}
+
+#map-season {
+    font-size: 1.4em;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    position: absolute;
+}

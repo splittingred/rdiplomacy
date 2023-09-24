@@ -1,0 +1,1083 @@
+---
+name: "Classic"
+unit_types:
+  army:
+    height: 50
+    width: 50
+  fleet:
+    height: 50
+    width: 50
+territories:
+  - name: "Adriatic Sea"
+    abbr: "adr"
+    type: "sea"
+    adjacent:
+      coast: ["alb", "apu", "tri", "ven"]
+      sea: ["ion"]
+    display:
+      unit:
+        x: 793.5
+        y: 1048.0
+      dislodged_unit:
+        x: 782.0
+        y: 1038.0
+  - name: "Aegean Sea"
+    abbr: "aeg"
+    type: "sea"
+    adjacent:
+      coast: ["bul-sc", "con", "gre", "smy"]
+      sea: ["eas", "ion"]
+    display:
+      unit:
+        x: 1043.5
+        y: 1230.0
+      dislodged_unit:
+        x: 1032.0
+        y: 1220.0
+  - name: "Albania"
+    abbr: "alb"
+    type: "coast"
+    adjacent:
+      coast: ["tri", "gre"]
+      land: ["tri", "ser", "gre"]
+      sea: ["adr", "ion"]
+    display:
+      unit:
+        x: 906.5
+        y: 1113.0
+      dislodged_unit:
+        x: 895.0
+        y: 1103.0
+  - name: "Ankara"
+    abbr: "ank"
+    type: "coast"
+    adjacent:
+      coast: ["arm", "con"]
+      land: ["smy", "arm", "con"]
+      sea: ["bla"]
+    display:
+      unit:
+        x: 1301.5
+        y: 1110.0
+      dislodged_unit:
+        x: 1290.0
+        y: 1100.0
+  - name: "Apulia"
+    abbr: "apu"
+    type: "coast"
+    adjacent:
+      coast: ["nap", "ven"]
+      land: ["rom", "nap", "ven"]
+      sea: ["adr", "ion"]
+    display:
+      unit:
+        x: 791.5
+        y: 1106.0
+      dislodged_unit:
+        x: 780.0
+        y: 1096.0
+  - name: "Armenia"
+    abbr: "arm"
+    type: "inland"
+    adjacent:
+      land: ["smy", "syr", "ank", "sev"]
+      sea: ["bla"]
+    display:
+      unit:
+        x: 1484.5
+        y: 1090.0
+      dislodged_unit:
+        x: 1473.0
+        y: 1080.0
+  - name: "Baltic Sea"
+    abbr: "bal"
+    type: "sea"
+    adjacent:
+      coast: ["den", "swe", "kie", "lvn", "pru", "ber"]
+      sea: ["bot"]
+    display:
+      unit:
+        x: 878.5
+        y: 610.0
+      dislodged_unit:
+        x: 867.0
+        y: 600.0
+  - name: "Barents Sea"
+    abbr: "bar"
+    type: "sea"
+    adjacent:
+      coast: ["nwy", "stp-nc"]
+      sea: ["nwg"]
+    display:
+      unit:
+        x: 1162.5
+        y: 73.0
+      dislodged_unit:
+        x: 1151.0
+        y: 63.0
+  - name: "Belgium"
+    abbr: "bel"
+    type: "coast"
+    adjacent:
+      coast: ["pic", "hol"]
+      land: ["pic", "ruh", "hol", "bur"]
+      sea: ["eng", "nth"]
+    display:
+      unit:
+        x: 561.5
+        y: 753.0
+      dislodged_unit:
+        x: 550.0
+        y: 743.0
+  - name: "Berlin"
+    abbr: "ber"
+    type: "coast"
+    adjacent:
+      coast: ["kie", "pru"]
+      land: ["kie", "pru", "sil", "mun"]
+      sea: ["bal"]
+    display:
+      unit:
+        x: 771.5
+        y: 690.0
+      dislodged_unit:
+        x: 760.0
+        y: 680.0
+  - name: "Black Sea"
+    abbr: "bla"
+    type: "sea"
+    adjacent:
+      coast: ["sev", "ank", "con", "bul-ec", "rum"]
+      sea: []
+    display:
+      unit:
+        x: 1233.5
+        y: 1000.0
+      dislodged_unit:
+        x: 1222.0
+        y: 990.0
+  - name: "Bohemia"
+    abbr: "boh"
+    type: "inland"
+    adjacent:
+      land: ["mun", "sil", "gal", "vie", "tyr"]
+    display:
+      unit:
+        x: 806.5
+        y: 814.0
+      dislodged_unit:
+        x: 795.0
+        y: 804.0
+  - name: "Brest"
+    abbr: "bre"
+    type: "coast"
+    adjacent:
+      coast: ["pic", "gas"]
+      land: ["par", "pic", "gas"]
+      sea: ["eng", "mao"]
+    display:
+      unit:
+        x: 400.5
+        y: 810.0
+      dislodged_unit:
+        x: 393.0
+        y: 805.0
+  - name: "Budapest"
+    abbr: "bud"
+    type: "inland"
+    adjacent:
+      land: ["vie", "gal", "rum", "ser", "tri"]
+    display:
+      unit:
+        x: 950.5
+        y: 904.0
+      dislodged_unit:
+        x: 939.0
+        y: 894.0
+  - name: "Bulgaria"
+    abbr: "bul"
+    type: "coast"
+    adjacent:
+      land: ["ser", "rum", "gre", "con"]
+    display:
+      unit:
+        x: 1048.5
+        y: 1068.0
+      dislodged_unit:
+          x: 1037.0
+          y: 1058.0
+    coasts:
+      - name: "South Coast"
+        abbr: "sc"
+        adjacent:
+          coast: ["con", "gre"]
+          sea: ["aeg"]
+        display:
+          unit:
+            x: 1070.0
+            y: 1140.0
+          dislodged_unit:
+            x: 1058.5
+            y: 1130.0
+      - name: "East Coast"
+        abbr: "ec"
+        adjacent:
+          coast: ["gre", "con"]
+          sea: ["bla"]
+        display:
+          unit:
+            x: 1127.0
+            y: 1067.0
+          dislodged_unit:
+            x: 1115.5
+            y: 1057.0
+  - name: "Burgundy"
+    abbr: "bur"
+    type: "inland"
+    adjacent:
+      land: ["par", "pic", "bel", "ruh", "mun", "mar", "gas"]
+    display:
+      unit:
+        x: 559.5
+        y: 871.0
+      dislodged_unit:
+        x: 548.0
+        y: 861.0
+  - name: "Clyde"
+    abbr: "cly"
+    type: "coast"
+    adjacent:
+      coast: ["edi", "lvp"]
+      land: ["edi", "lvp"]
+      sea: ["nao", "nwg"]
+    display:
+      unit:
+        x: 436.5
+        y: 492.0
+      dislodged_unit:
+        x: 425.0
+        y: 482.0
+  - name: "Constantinople"
+    abbr: "con"
+    type: "coast"
+    adjacent:
+      coast: ["bul-sc", "bul-ec", "ank", "smy"]
+      land: ["bul", "ank", "smy"]
+      sea: ["bla", "aeg"]
+    display:
+      unit:
+        x: 1145.5
+        y: 1137.0
+      dislodged_unit:
+        x: 1134.0
+        y: 1127.0
+  - name: "Denmark"
+    abbr: "den"
+    type: "coast"
+    adjacent:
+      coast: ["swe", "kie"]
+      land: ["swe", "kie"]
+      sea: ["ska", "hel", "bal"]
+    display:
+      unit:
+        x: 703.5
+        y: 587.0
+      dislodged_unit:
+        x: 692.0
+        y: 577.0
+  - name: "Eastern Mediterranean"
+    abbr: "eas"
+    type: "sea"
+    adjacent:
+      coast: ["smy", "syr"]
+      land: []
+      sea: ["ion", "aeg"]
+    display:
+      unit:
+        x: 1218.5
+        y: 1311.0
+      dislodged_unit:
+        x: 1207.0
+        y: 1301.0
+  - name: "Edinburgh"
+    abbr: "edi"
+    type: "coast"
+    adjacent:
+      coast: ["yor", "cly"]
+      land: ["yor", "lvp", "cly"]
+      sea: ["nth", "nwg"]
+    display:
+      unit:
+        x: 473.5
+        y: 514.0
+      dislodged_unit:
+        x: 462.0
+        y: 504.0
+  - name: "English Channel"
+    abbr: "eng"
+    type: "sea"
+    adjacent:
+      coast: ["wal", "lon", "bre", "pic", "bel"]
+      sea: ["iri", "mao", "nth"]
+    display:
+      unit:
+        x: 394.5
+        y: 751.0
+      dislodged_unit:
+        x: 383.0
+        y: 741.0
+  - name: "Finland"
+    abbr: "fin"
+    type: "coast"
+    adjacent:
+      coast: ["stp-nc", "swe"]
+      land: ["stp", "nwy", "swe"]
+      sea: ["bot"]
+    display:
+      unit:
+        x: 988.5
+        y: 380.0
+      dislodged_unit:
+        x: 977.0
+        y: 370.0
+  - name: "Galicia"
+    abbr: "gal"
+    type: "inland"
+    adjacent:
+      land: ["boh", "sil", "war", "ukr", "rum", "bud", "vie"]
+    display:
+      unit:
+        x: 999.5
+        y: 831.0
+      dislodged_unit:
+        x: 988.0
+        y: 821.0
+  - name: "Gascony"
+    abbr: "gas"
+    type: "coast"
+    adjacent:
+      coast: ["mar", "spa-nc", "bre"]
+      land: ["mar", "spa", "bre", "par", "bur"]
+      sea: ["mao"]
+    display:
+      unit:
+        x: 422.5
+        y: 912.0
+      dislodged_unit:
+        x: 411.0
+        y: 902.0
+  - name: "Greece"
+    abbr: "gre"
+    type: "coast"
+    adjacent:
+      coast: ["alb", "bul-sc"]
+      land: ["alb", "ser", "bul"]
+      sea: ["ion", "aeg"]
+    display:
+      unit:
+        x: 966.5
+        y: 1190.0
+      dislodged_unit:
+        x: 955.0
+        y: 1180.0
+  - name: "Gulf of Bothnia"
+    abbr: "bot"
+    type: "sea"
+    adjacent:
+      coast: ["fin", "swe", "stp-sc", "lvn"]
+      sea: ["bal"]
+    display:
+      unit:
+        x: 941.5
+        y: 485.0
+      dislodged_unit:
+        x: 930.0
+        y: 475.0
+  - name: "Gulf of Lyon"
+    abbr: "lyo"
+    type: "sea"
+    adjacent:
+      coast: ["spa-sc", "mar", "pie", "tus"]
+      sea: ["wes", "tys"]
+    display:
+      unit:
+        x: 556.0
+        y: 1060.0
+      dislodged_unit:
+        x: 544.5
+        y: 1050.0
+  - name: "Helgoland Bight"
+    abbr: "hel"
+    type: "sea"
+    adjacent:
+      coast: ["kie", "hol", "den"]
+      sea: ["nth"]
+    display:
+      unit:
+        x: 651.5
+        y: 631.0
+      dislodged_unit:
+        x: 640.0
+        y: 621.0
+  - name: "Holland"
+    abbr: "hol"
+    type: "coast"
+    adjacent:
+      coast: ["kie", "bel"]
+      land: ["ruh", "kie", "bel"]
+      sea: ["nth", "hel"]
+    display:
+      unit:
+        x: 596.5
+        y: 711.0
+      dislodged_unit:
+        x: 585.0
+        y: 701.0
+  - name: "Ionian Sea"
+    abbr: "ion"
+    type: "sea"
+    adjacent:
+      coast: ["tun", "nap", "apu", "alb", "gre"]
+      sea: ["aeg", "eas", "tys", "adr"]
+    display:
+      unit:
+        x: 846.5
+        y: 1286.0
+      dislodged_unit:
+        x: 835.0
+        y: 1276.0
+  - name: "Irish Sea"
+    abbr: "iri"
+    type: "sea"
+    adjacent:
+      coast: ["wal", "lvp"]
+      sea: ["nao", "eng", "mao"]
+    display:
+      unit:
+        x: 335.5
+        y: 661.0
+      dislodged_unit:
+        x: 324.0
+        y: 651.0
+  - name: "Kiel"
+    abbr: "kie"
+    type: "coast"
+    adjacent:
+      coast: ["hol", "den", "ber"]
+      land: ["hol", "den", "mun", "ruh", "ber"]
+      sea: ["hel", "bal"]
+    display:
+      unit:
+        x: 683.5
+        y: 701.0
+      dislodged_unit:
+        x: 672.0
+        y: 691.0
+  - name: "Liverpool"
+    abbr: "lvp"
+    type: "coast"
+    adjacent:
+      coast: ["wal", "cly"]
+      land: ["yor", "wal", "cly", "edi"]
+      sea: ["iri", "nat"]
+    display:
+      unit:
+        x: 450.5
+        y: 576.0
+      dislodged_unit:
+        x: 439.0
+        y: 566.0
+  - name: "Livonia"
+    abbr: "lvn"
+    type: "coast"
+    adjacent:
+      coast: ["stp-sc", "pru"]
+      land: ["stp", "mos", "war", "pru"]
+      sea: ["bot", "bal"]
+    display:
+      unit:
+        x: 1025.5
+        y: 567.0
+      dislodged_unit:
+        x: 1014.0
+        y: 557.0
+  - name: "London"
+    abbr: "lon"
+    type: "coast"
+    adjacent:
+      coast: ["wal", "yor"]
+      land: ["yor", "wal"]
+      sea: ["nth", "eng"]
+    display:
+      unit:
+        x: 488.5
+        y: 675.0
+      dislodged_unit:
+        x: 477.0
+        y: 665.0
+  - name: "Marseilles"
+    abbr: "mar"
+    type: "coast"
+    adjacent:
+      coast: ["spa-sc", "pie"]
+      land: ["spa", "pie", "gas", "bur"]
+      sea: ["lyo"]
+    display:
+      unit:
+        x: 524.5
+        y: 975.5
+      dislodged_unit:
+        x: 513.0
+        y: 965.5
+  - name: "Mid-Atlantic Ocean"
+    abbr: "mao"
+    type: "sea"
+    adjacent:
+      coast: ["spa-nc", "gas", "bre", "por", "naf"]
+      sea: ["nao", "iri", "wes", "eng"]
+    display:
+      unit:
+        x: 126.0
+        y: 902.0
+      dislodged_unit:
+        x: 114.5
+        y: 892.0
+  - name: "Moscow"
+    abbr: "mos"
+    type: "inland"
+    adjacent:
+      land: ["stp", "lvn", "war", "ukr", "sev"]
+    display:
+      unit:
+        x: 1200.5
+        y: 590.0
+      dislodged_unit:
+        x: 1189.0
+        y: 580.0
+  - name: "Munich"
+    abbr: "mun"
+    type: "inland"
+    adjacent:
+      land: ["ruh", "kie", "ber", "sil", "boh", "tyr", "bur"]
+    display:
+      unit:
+        x: 693.5
+        y: 828.0
+      dislodged_unit:
+        x: 682.0
+        y: 818.0
+  - name: "Naples"
+    abbr: "nap"
+    type: "coast"
+    adjacent:
+      coast: ["rom", "apu"]
+      land: ["rom", "apu"]
+      sea: ["tys", "ion"]
+    display:
+      unit:
+        x: 806.5
+        y: 1170.0
+      dislodged_unit:
+        x: 795.0
+        y: 1160.0
+  - name: "North Africa"
+    abbr: "naf"
+    type: "coast"
+    adjacent:
+      coast: ["tun"]
+      land: ["tun"]
+      sea: ["wes", "mao"]
+    display:
+      unit:
+        x: 325.5
+        y: 1281.0
+      dislodged_unit:
+        x: 314.0
+        y: 1271.0
+  - name: "North Atlantic Ocean"
+    abbr: "nao"
+    type: "sea"
+    adjacent:
+      coast: ["cly", "lvp"]
+      land: []
+      sea: ["mao", "iri", "nwg"]
+    display:
+      unit:
+        x: 238.0
+        y: 427.0
+      dislodged_unit:
+        x: 226.5
+        y: 417.0
+  - name: "North Sea"
+    abbr: "nth"
+    type: "sea"
+    adjacent:
+      coast: ["nwy", "den", "hol", "bel", "lon", "edi", "yor"]
+      sea: ["nwg", "eng", "ska", "hel"]
+    display:
+      unit:
+        x: 553.5
+        y: 560.0
+      dislodged_unit:
+        x: 542.0
+        y: 550.0
+  - name: "Norwegian Sea"
+    abbr: "nwg"
+    type: "sea"
+    adjacent:
+      coast: ["cly", "edi", "nwy"]
+      sea: ["nao", "nth", "bar"]
+    display:
+      unit:
+        x: 652.7
+        y: 181.8
+      dislodged_unit:
+        x: 641.2
+        y: 171.8
+  - name: "Norway"
+    abbr: "nwy"
+    type: "coast"
+    adjacent:
+      coast: ["stp-nc", "swe"]
+      land: ["stp", "fin", "swe"]
+      sea: ["bar", "nwg", "nth"]
+    display:
+      unit:
+        x: 703.5
+        y: 410.0
+      dislodged_unit:
+        x: 692.0
+        y: 400.0
+  - name: "Paris"
+    abbr: "par"
+    type: "inland"
+    adjacent:
+      land: ["bre", "pic", "gas", "bur"]
+    display:
+      unit:
+        x: 478.5
+        y: 815.0
+      dislodged_unit:
+        x: 487.0
+        y: 835.0
+  - name: "Picardy"
+    abbr: "pic"
+    type: "coast"
+    adjacent:
+      coast: ["bre", "bel"]
+      land: ["bre", "bel", "bur", "par"]
+      sea: ["eng"]
+    display:
+      unit:
+        x: 523.5
+        y: 781.0
+      dislodged_unit:
+        x: 512.0
+        y: 771.0
+  - name: "Piedmont"
+    abbr: "pie"
+    type: "coast"
+    adjacent:
+      coast: ["tus", "mar"]
+      land: ["tus", "ven", "tyr", "mar"]
+      sea: ["lyo"]
+    display:
+      unit:
+        x: 630.5
+        y: 968.0
+      dislodged_unit:
+        x: 619.0
+        y: 958.0
+  - name: "Portugal"
+    abbr: "por"
+    type: "coast"
+    adjacent:
+      coast: ["spa-nc", "spa-sc"]
+      land: ["spa"]
+      sea: ["mao"]
+    display:
+      unit:
+        x: 181.5
+        y: 1013.0
+      dislodged_unit:
+        x: 170.0
+        y: 1003.0
+  - name: "Prussia"
+    abbr: "pru"
+    type: "coast"
+    adjacent:
+      coast: ["lvn", "ber"]
+      land: ["lvn", "war", "ber", "sil"]
+      sea: ["bal"]
+    display:
+      unit:
+        x: 865.5
+        y: 690.0
+      dislodged_unit:
+        x: 854.0
+        y: 680.0
+  - name: "Rome"
+    abbr: "rom"
+    type: "coast"
+    adjacent:
+      coast: ["tus", "nap"]
+      land: ["tus", "ven", "nap", "apu"]
+      sea: ["tys"]
+    display:
+      unit:
+        x: 731.5
+        y: 1102.0
+      dislodged_unit:
+        x: 720.0
+        y: 1092.0
+  - name: "Ruhr"
+    abbr: "ruh"
+    type: "inland"
+    adjacent:
+      land: ["bel", "hol", "kie", "mun", "bur"]
+    display:
+      unit:
+        x: 636.5
+        y: 779.0
+      dislodged_unit:
+        x: 625.0
+        y: 769.0
+  - name: "Rumania"
+    abbr: "rum"
+    type: "coast"
+    adjacent:
+      coast: ["sev", "bul-ec"]
+      land: ["sev", "ukr", "gal", "bud", "ser", "bul"]
+      sea: ["bla"]
+    display:
+      unit:
+        x: 1096.5
+        y: 967.0
+      dislodged_unit:
+        x: 1085.0
+        y: 957.0
+  - name: "Serbia"
+    abbr: "ser"
+    type: "inland"
+    adjacent:
+      land: ["tri", "bud", "rum", "bul", "gre", "alb"]
+    display:
+      unit:
+        x: 933.5
+        y: 1050.0
+      dislodged_unit:
+        x: 922.0
+        y: 1040.0
+  - name: "Sevastopol"
+    abbr: "sev"
+    type: "coast"
+    adjacent:
+      coast: ["rum", "arm"]
+      land: ["mos", "ukr", "arm", "rum"]
+      sea: ["bla"]
+    display:
+      unit:
+        x: 1284.5
+        y: 845.0
+      dislodged_unit:
+        x: 1273.0
+        y: 835.0
+  - name: "Silesia"
+    abbr: "sil"
+    type: "inland"
+    adjacent:
+      land: ["ber", "mun", "boh", "gal", "war", "pru"]
+    display:
+      unit:
+        x: 832.5
+        y: 769.0
+      dislodged_unit:
+        x: 821.0
+        y: 759.0
+  - name: "Skagerrak"
+    abbr: "ska"
+    type: "sea"
+    adjacent:
+      coast: ["den", "swe", "nwy"]
+      sea: ["nth"]
+    display:
+      unit:
+        x: 735.5
+        y: 518.0
+      dislodged_unit:
+        x: 724.0
+        y: 508.0
+  - name: "Smyrna"
+    abbr: "smy"
+    type: "coast"
+    adjacent:
+      coast: ["con", "syr"]
+      land: ["con", "ank", "arm", "syr"]
+      sea: ["eas", "aeg"]
+    display:
+      unit:
+        x: 1253.5
+        y: 1210.0
+      dislodged_unit:
+        x: 1242.0
+        y: 1200.0
+  - name: "Spain"
+    abbr: "spa"
+    type: "coast"
+    adjacent:
+      land: ["por", "gas", "mar"]
+    display:
+      unit:
+        x: 335.5
+        y: 1039.0
+      dislodged_unit:
+        x: 324.0
+        y: 1029.0
+    coasts:
+      - name: "North Coast"
+        abbr: "nc"
+        adjacent:
+          coast: ["gas", "por"]
+          sea: ["mao"]
+        display:
+          unit:
+            x: 289.0
+            y: 965.0
+          dislodged_unit:
+            x: 277.5
+            y: 955.0
+      - name: "South Coast"
+        abbr: "sc"
+        adjacent:
+          coast: ["por", "mar"]
+          sea: ["wes", "lyo"]
+        display:
+          unit:
+            x: 291.0
+            y: 1166.0
+          dislodged_unit:
+            x: 279.5
+            y: 1156.0
+  - name: "St. Petersburg"
+    abbr: "stp"
+    type: "coast"
+    adjacent:
+      land: ["fin", "lvn", "mos", "nwy"]
+    display:
+      unit:
+        x: 1166.5
+        y: 405.0
+      dislodged_unit:
+        x: 1155.0
+        y: 395.0
+    coasts:
+      - name: "North Coast"
+        abbr: "nc"
+        adjacent:
+          coast: ["nwy"]
+          sea: ["bar"]
+        display:
+          unit:
+            x: 1218.0
+            y: 222.0
+          dislodged_unit:
+            x: 1206.5
+            y: 212.0
+      - name: "South Coast"
+        abbr: "sc"
+        adjacent:
+          coast: ["fin", "lvn"]
+          sea: ["bot"]
+        display:
+          unit:
+            x: 1066.0
+            y: 487.0
+          dislodged_unit:
+            x: 1054.5
+            y: 477.0
+  - name: "Sweden"
+    abbr: "swe"
+    type: "coast"
+    adjacent:
+      coast: ["fin", "nwy", "den"]
+      land: ["fin", "nwy", "den"]
+      sea: ["bal", "bot", "ska"]
+    display:
+      unit:
+        x: 829.5
+        y: 459.0
+      dislodged_unit:
+        x: 818.0
+        y: 449.0
+  - name: "Syria"
+    abbr: "syr"
+    type: "coast"
+    adjacent:
+      coast: ["smy"]
+      land: ["smy", "arm"]
+      sea: ["eas"]
+    display:
+      unit:
+        x: 1452.5
+        y: 1206.0
+      dislodged_unit:
+        x: 1441.0
+        y: 1196.0
+  - name: "Trieste"
+    abbr: "tri"
+    type: "coast"
+    adjacent:
+      coast: ["ven", "alb"]
+      land: ["ven", "tyr", "vie", "bud", "ser", "alb"]
+      sea: ["adr"]
+    display:
+      unit:
+        x: 825.5
+        y: 996.0
+      dislodged_unit:
+        x: 814.0
+        y: 986.0
+  - name: "Tunis"
+    abbr: "tun"
+    type: "coast"
+    adjacent:
+      coast: ["naf"]
+      land: ["naf"]
+      sea: ["ion", "tys", "wes"]
+    display:
+      unit:
+        x: 622.5
+        y: 1300.0
+      dislodged_unit:
+        x: 611.0
+        y: 1290.0
+  - name: "Tuscany"
+    abbr: "tus"
+    type: "coast"
+    adjacent:
+      coast: ["rom", "pie"]
+      land: ["ven", "pie", "rom"]
+      sea: ["tys", "lyo"]
+    display:
+      unit:
+        x: 686.5
+        y: 1034.0
+      dislodged_unit:
+        x: 675.0
+        y: 1024.0
+  - name: "Tyrolia"
+    abbr: "tyr"
+    type: "inland"
+    adjacent:
+      land: ["mun", "boh", "vie", "pie", "ven", "tri"]
+    display:
+      unit:
+        x: 742.5
+        y: 904.0
+      dislodged_unit:
+        x: 731.0
+        y: 894.0
+  - name: "Tyrrhenian Sea"
+    abbr: "tys"
+    type: "sea"
+    adjacent:
+      coast: ["tus", "rom", "nap", "tun"]
+      sea: ["lyo", "ion", "wes"]
+    display:
+      unit:
+        x: 698.5
+        y: 1149.1
+      dislodged_unit:
+        x: 687.0
+        y: 1139.1
+  - name: "Ukraine"
+    abbr: "ukr"
+    type: "inland"
+    adjacent:
+      land: ["mos", "war", "gal", "rum", "sev"]
+    display:
+      unit:
+        x: 1124.5
+        y: 800.0
+      dislodged_unit:
+        x: 1113.0
+        y: 790.0
+  - name: "Venice"
+    abbr: "ven"
+    type: "coast"
+    adjacent:
+      coast: ["tri", "apu"]
+      land: ["pie", "tyr", "tri", "apu", "rom", "tus"]
+      sea: ["adr"]
+    display:
+      unit:
+        x: 707.5
+        y: 994.0
+      dislodged_unit:
+        x: 696.0
+        y: 984.0
+  - name: "Vienna"
+    abbr: "vie"
+    type: "inland"
+    adjacent:
+      land: ["boh", "gal", "bud", "tri", "tyr"]
+    display:
+      unit:
+        x: 855.5
+        y: 864.0
+      dislodged_unit:
+        x: 844.0
+        y: 854.0
+  - name: "Wales"
+    abbr: "wal"
+    type: "coast"
+    adjacent:
+      coast: ["lvp", "lon"]
+      land: ["yor", "lvp", "lon"]
+      sea: ["iri", "eng"]
+    display:
+      unit:
+        x: 428.5
+        y: 658.0
+      dislodged_unit:
+        x: 417.0
+        y: 648.0
+  - name: "Warsaw"
+    abbr: "war"
+    type: "inland"
+    adjacent:
+      land: ["sil", "gal", "ukr", "mos", "lvn", "pru"]
+    display:
+      unit:
+        x: 963.5
+        y: 730.0
+      dislodged_unit:
+        x: 972.0
+        y: 730.0
+  - name: "Western Mediterranean"
+    abbr: "wes"
+    type: "sea"
+    adjacent:
+      coast: ["spa-sc", "tun", "naf"]
+      sea: ["tys", "mao", "lyo"]
+    display:
+      unit:
+        x: 462.5
+        y: 1163.0
+      dislodged_unit:
+        x: 451.0
+        y: 1153.0
+  - name: "Yorkshire"
+    abbr: "yor"
+    type: "coast"
+    adjacent:
+      coast: ["edi", "lon"]
+      land: ["edi", "lvp", "lon", "wal"]
+      sea: ["nth"]
+    display:
+      unit:
+        x: 492.5
+        y: 616.0
+      dislodged_unit:
+        x: 481.0
+        y: 606.0

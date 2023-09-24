@@ -1,0 +1,91 @@
+---
+name: "First Game"
+variant: "classic"
+players:
+  eng: player-1
+  fra: player-2
+  ger: player-3
+  ita: player-4
+  aus: player-5
+  tur: player-6
+  rus: player-7
+turns:
+  - year: 1901
+    season: SPRING
+    orders:
+      eng:
+        - territory: lvp
+          type: MOVE
+          destination: edi
+        - territory: lon
+          type: MOVE
+          destination: nth
+        - territory: edi
+          type: MOVE
+          destination: nwg
+      fra:
+        - territory: bre
+          type: MOVE
+          destination: mao
+        - territory: par
+          type: MOVE
+          destination: pic
+        - territory: mar
+          type: MOVE
+          destination: spa
+      ger:
+        - territory: ber
+          type: MOVE
+          destination: kie
+        - territory: mun
+          type: MOVE
+          destination: ruh
+        - territory: kie
+          type: MOVE
+          destination: den
+      rus:
+        - territory: stp
+          coast: sc
+          type: MOVE
+          destination: bot
+        - territory: mos
+          type: MOVE
+          destination: ukr
+        - territory: war
+          type: MOVE
+          destination: gal
+        - territory: sev
+          type: MOVE
+          destination: bla
+      ita:
+        - territory: rom
+          type: MOVE
+          destination: apu
+        - territory: ven
+          type: HOLD
+        - territory: nap
+          type: MOVE
+          destination: ion
+      tur:
+        - territory: con
+          type: MOVE
+          destination: bul
+        - territory: ank
+          type: MOVE
+          destination: bla
+        - territory: smy
+          type: MOVE
+          destination: con
+      aus:
+        - territory: vie
+          type: MOVE
+          destination: gal
+        - territory: bud
+          type: MOVE
+          destination: ser
+        - territory: tri
+          type: MOVE
+          destination: alb
+  - year: 1901
+    season: FALL
+    adjucated: false

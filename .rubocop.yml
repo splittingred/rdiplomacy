@@ -1,0 +1,60 @@
+AllCops:
+  TargetRubyVersion: 3.2
+  NewCops: enable
+  Exclude:
+    - bin/**/*
+    - config/**/*
+    - db/schema.rb
+    - db/migrate/*.rb
+    - db/seeds.rb
+    - vendor/**/*
+    - tmp/**/*
+require:
+  - rubocop-performance
+  - rubocop-rspec
+
+Layout/LineLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/ParameterLists:
+  Enabled: false
+
+Naming/AccessorMethodName:
+  Enabled: false
+
+Style/RedundantConstantBase:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 418
+
+Metrics/BlockLength:
+  Max: 468
+
+Metrics/ClassLength:
+  Max: 453
+
+Metrics/CyclomaticComplexity:
+  Max: 36
+
+Metrics/PerceivedComplexity:
+  Max: 36
+
+Naming/VariableNumber:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+# Spec
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false

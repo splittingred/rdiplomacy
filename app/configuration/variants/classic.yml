@@ -1,0 +1,108 @@
+---
+name: "Classic"
+abbr: "classic"
+map: "classic"
+description: "Classic Diplomacy"
+options:
+  start_year: 1901
+  start_season: SPRING
+  turn_length: 86400 # 1 day
+move_types:
+  hold:
+    width: 75
+    height: 75
+countries:
+  - name: "Austria"
+    abbr: "aus"
+    possessive: "Austrian"
+    color: "#c48f85"
+    setup:
+      influence: ["vie", "bud", "tri", "gal", "boh", "tyr"]
+      units:
+      - territory: "vie"
+        type: "army"
+      - territory: "bud"
+        type: "army"
+      - territory: "tri"
+        type: "fleet"
+  - name: "England"
+    abbr: "eng"
+    possessive: "English"
+    color: "darkviolet"
+    setup:
+      influence: ["lon", "lvp", "edi", "yor", "wal", "cly"]
+      units:
+      - territory: "lvp"
+        type: "army"
+      - territory: "edi"
+        type: "fleet"
+      - territory: "lon"
+        type: "fleet"
+  - name: "France"
+    abbr: "fra"
+    possessive: "French"
+    color: "royalblue"
+    setup:
+      influence: ["par", "bre", "mar", "gas", "pic", "bur"]
+      units:
+      - territory: "mar"
+        type: "army"
+      - territory: "par"
+        type: "army"
+      - territory: "bre"
+        type: "fleet"
+  - name: "Germany"
+    abbr: "ger"
+    possessive: "German"
+    color: "#a08a75"
+    setup:
+      influence: ["ber", "mun", "kie", "ruh", "pru", "sil"]
+      units:
+      - territory: "ber"
+        type: "army"
+      - territory: "mun"
+        type: "army"
+      - territory: "kie"
+        type: "fleet"
+  - name: "Italy"
+    abbr: "ita"
+    possessive: "Italian"
+    color: "forestgreen"
+    setup:
+      influence: ["rom", "ven", "nap", "tus", "apu", "pie"]
+      units:
+      - territory: "rom"
+        type: "army"
+      - territory: "ven"
+        type: "army"
+      - territory: "nap"
+        type: "fleet"
+  - name: "Russia"
+    abbr: "rus"
+    possessive: "Russian"
+    color: "#757d91"
+    setup:
+      influence: ["stp", "mos", "ukr", "fin", "war", "lvn", "sev"]
+      units:
+      - territory: "mos"
+        type: "army"
+      - territory: "war"
+        type: "army"
+      - territory: "stp"
+        type: "fleet"
+        coast: "sc"
+      - territory: "sev"
+        type: "fleet"
+  - name: "Turkey"
+    abbr: "tur"
+    possessive: "Turkish"
+    color: "#b9a61c"
+    setup:
+      influence: [ "con", "smy", "ank", "arm", "syr" ]
+      units:
+      - territory: "con"
+        type: "army"
+      - territory: "smy"
+        type: "army"
+      - territory: "ank"
+        type: "fleet"

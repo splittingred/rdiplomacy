@@ -11,7 +11,7 @@ territories:
   - name: "Adriatic Sea"
     abbr: "adr"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["alb", "apu", "tri", "ven"]
       sea: ["ion"]
     display:
@@ -24,7 +24,7 @@ territories:
   - name: "Aegean Sea"
     abbr: "aeg"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["bul-sc", "con", "gre", "smy"]
       sea: ["eas", "ion"]
     display:
@@ -37,7 +37,7 @@ territories:
   - name: "Albania"
     abbr: "alb"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["tri", "gre"]
       land: ["tri", "ser", "gre"]
       sea: ["adr", "ion"]
@@ -51,7 +51,7 @@ territories:
   - name: "Ankara"
     abbr: "ank"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["arm", "con"]
       land: ["smy", "arm", "con"]
       sea: ["bla"]
@@ -65,7 +65,7 @@ territories:
   - name: "Apulia"
     abbr: "apu"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["nap", "ven"]
       land: ["rom", "nap", "ven"]
       sea: ["adr", "ion"]
@@ -79,7 +79,7 @@ territories:
   - name: "Armenia"
     abbr: "arm"
     type: "inland"
-    adjacent:
+    borders:
       land: ["smy", "syr", "ank", "sev"]
       sea: ["bla"]
     display:
@@ -92,7 +92,7 @@ territories:
   - name: "Baltic Sea"
     abbr: "bal"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["den", "swe", "kie", "lvn", "pru", "ber"]
       sea: ["bot"]
     display:
@@ -105,7 +105,7 @@ territories:
   - name: "Barents Sea"
     abbr: "bar"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["nwy", "stp-nc"]
       sea: ["nwg"]
     display:
@@ -118,7 +118,7 @@ territories:
   - name: "Belgium"
     abbr: "bel"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["pic", "hol"]
       land: ["pic", "ruh", "hol", "bur"]
       sea: ["eng", "nth"]
@@ -132,7 +132,7 @@ territories:
   - name: "Berlin"
     abbr: "ber"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["kie", "pru"]
       land: ["kie", "pru", "sil", "mun"]
       sea: ["bal"]
@@ -146,7 +146,7 @@ territories:
   - name: "Black Sea"
     abbr: "bla"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["sev", "ank", "con", "bul-ec", "rum"]
       sea: []
     display:
@@ -159,7 +159,7 @@ territories:
   - name: "Bohemia"
     abbr: "boh"
     type: "inland"
-    adjacent:
+    borders:
       land: ["mun", "sil", "gal", "vie", "tyr"]
     display:
       unit:
@@ -171,7 +171,7 @@ territories:
   - name: "Brest"
     abbr: "bre"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["pic", "gas"]
       land: ["par", "pic", "gas"]
       sea: ["eng", "mao"]
@@ -185,7 +185,7 @@ territories:
   - name: "Budapest"
     abbr: "bud"
     type: "inland"
-    adjacent:
+    borders:
       land: ["vie", "gal", "rum", "ser", "tri"]
     display:
       unit:
@@ -197,7 +197,7 @@ territories:
   - name: "Bulgaria"
     abbr: "bul"
     type: "coast"
-    adjacent:
+    borders:
       land: ["ser", "rum", "gre", "con"]
     display:
       unit:
@@ -209,7 +209,7 @@ territories:
     coasts:
       - name: "South Coast"
         abbr: "sc"
-        adjacent:
+        borders:
           coast: ["con", "gre"]
           sea: ["aeg"]
         display:
@@ -221,7 +221,7 @@ territories:
             y: 1130.0
       - name: "East Coast"
         abbr: "ec"
-        adjacent:
+        borders:
           coast: ["gre", "con"]
           sea: ["bla"]
         display:
@@ -234,7 +234,7 @@ territories:
   - name: "Burgundy"
     abbr: "bur"
     type: "inland"
-    adjacent:
+    borders:
       land: ["par", "pic", "bel", "ruh", "mun", "mar", "gas"]
     display:
       unit:
@@ -246,7 +246,7 @@ territories:
   - name: "Clyde"
     abbr: "cly"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["edi", "lvp"]
       land: ["edi", "lvp"]
       sea: ["nao", "nwg"]
@@ -260,7 +260,7 @@ territories:
   - name: "Constantinople"
     abbr: "con"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["bul-sc", "bul-ec", "ank", "smy"]
       land: ["bul", "ank", "smy"]
       sea: ["bla", "aeg"]
@@ -274,7 +274,7 @@ territories:
   - name: "Denmark"
     abbr: "den"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["swe", "kie"]
       land: ["swe", "kie"]
       sea: ["ska", "hel", "bal"]
@@ -288,7 +288,7 @@ territories:
   - name: "Eastern Mediterranean"
     abbr: "eas"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["smy", "syr"]
       land: []
       sea: ["ion", "aeg"]
@@ -302,7 +302,7 @@ territories:
   - name: "Edinburgh"
     abbr: "edi"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["yor", "cly"]
       land: ["yor", "lvp", "cly"]
       sea: ["nth", "nwg"]
@@ -316,7 +316,7 @@ territories:
   - name: "English Channel"
     abbr: "eng"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["wal", "lon", "bre", "pic", "bel"]
       sea: ["iri", "mao", "nth"]
     display:
@@ -329,7 +329,7 @@ territories:
   - name: "Finland"
     abbr: "fin"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["stp-nc", "swe"]
       land: ["stp", "nwy", "swe"]
       sea: ["bot"]
@@ -343,7 +343,7 @@ territories:
   - name: "Galicia"
     abbr: "gal"
     type: "inland"
-    adjacent:
+    borders:
       land: ["boh", "sil", "war", "ukr", "rum", "bud", "vie"]
     display:
       unit:
@@ -355,7 +355,7 @@ territories:
   - name: "Gascony"
     abbr: "gas"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["mar", "spa-nc", "bre"]
       land: ["mar", "spa", "bre", "par", "bur"]
       sea: ["mao"]
@@ -369,7 +369,7 @@ territories:
   - name: "Greece"
     abbr: "gre"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["alb", "bul-sc"]
       land: ["alb", "ser", "bul"]
       sea: ["ion", "aeg"]
@@ -383,7 +383,7 @@ territories:
   - name: "Gulf of Bothnia"
     abbr: "bot"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["fin", "swe", "stp-sc", "lvn"]
       sea: ["bal"]
     display:
@@ -396,7 +396,7 @@ territories:
   - name: "Gulf of Lyon"
     abbr: "lyo"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["spa-sc", "mar", "pie", "tus"]
       sea: ["wes", "tys"]
     display:
@@ -409,7 +409,7 @@ territories:
   - name: "Helgoland Bight"
     abbr: "hel"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["kie", "hol", "den"]
       sea: ["nth"]
     display:
@@ -422,7 +422,7 @@ territories:
   - name: "Holland"
     abbr: "hol"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["kie", "bel"]
       land: ["ruh", "kie", "bel"]
       sea: ["nth", "hel"]
@@ -436,7 +436,7 @@ territories:
   - name: "Ionian Sea"
     abbr: "ion"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["tun", "nap", "apu", "alb", "gre"]
       sea: ["aeg", "eas", "tys", "adr"]
     display:
@@ -449,7 +449,7 @@ territories:
   - name: "Irish Sea"
     abbr: "iri"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["wal", "lvp"]
       sea: ["nao", "eng", "mao"]
     display:
@@ -462,7 +462,7 @@ territories:
   - name: "Kiel"
     abbr: "kie"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["hol", "den", "ber"]
       land: ["hol", "den", "mun", "ruh", "ber"]
       sea: ["hel", "bal"]
@@ -476,10 +476,10 @@ territories:
   - name: "Liverpool"
     abbr: "lvp"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["wal", "cly"]
       land: ["yor", "wal", "cly", "edi"]
-      sea: ["iri", "nat"]
+      sea: ["iri", "nao"]
     display:
       unit:
         x: 450.5
@@ -490,7 +490,7 @@ territories:
   - name: "Livonia"
     abbr: "lvn"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["stp-sc", "pru"]
       land: ["stp", "mos", "war", "pru"]
       sea: ["bot", "bal"]
@@ -504,7 +504,7 @@ territories:
   - name: "London"
     abbr: "lon"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["wal", "yor"]
       land: ["yor", "wal"]
       sea: ["nth", "eng"]
@@ -518,7 +518,7 @@ territories:
   - name: "Marseilles"
     abbr: "mar"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["spa-sc", "pie"]
       land: ["spa", "pie", "gas", "bur"]
       sea: ["lyo"]
@@ -532,7 +532,7 @@ territories:
   - name: "Mid-Atlantic Ocean"
     abbr: "mao"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["spa-nc", "gas", "bre", "por", "naf"]
       sea: ["nao", "iri", "wes", "eng"]
     display:
@@ -545,7 +545,7 @@ territories:
   - name: "Moscow"
     abbr: "mos"
     type: "inland"
-    adjacent:
+    borders:
       land: ["stp", "lvn", "war", "ukr", "sev"]
     display:
       unit:
@@ -557,7 +557,7 @@ territories:
   - name: "Munich"
     abbr: "mun"
     type: "inland"
-    adjacent:
+    borders:
       land: ["ruh", "kie", "ber", "sil", "boh", "tyr", "bur"]
     display:
       unit:
@@ -569,7 +569,7 @@ territories:
   - name: "Naples"
     abbr: "nap"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["rom", "apu"]
       land: ["rom", "apu"]
       sea: ["tys", "ion"]
@@ -583,7 +583,7 @@ territories:
   - name: "North Africa"
     abbr: "naf"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["tun"]
       land: ["tun"]
       sea: ["wes", "mao"]
@@ -597,7 +597,7 @@ territories:
   - name: "North Atlantic Ocean"
     abbr: "nao"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["cly", "lvp"]
       land: []
       sea: ["mao", "iri", "nwg"]
@@ -611,7 +611,7 @@ territories:
   - name: "North Sea"
     abbr: "nth"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["nwy", "den", "hol", "bel", "lon", "edi", "yor"]
       sea: ["nwg", "eng", "ska", "hel"]
     display:
@@ -624,7 +624,7 @@ territories:
   - name: "Norwegian Sea"
     abbr: "nwg"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["cly", "edi", "nwy"]
       sea: ["nao", "nth", "bar"]
     display:
@@ -637,7 +637,7 @@ territories:
   - name: "Norway"
     abbr: "nwy"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["stp-nc", "swe"]
       land: ["stp", "fin", "swe"]
       sea: ["bar", "nwg", "nth"]
@@ -651,7 +651,7 @@ territories:
   - name: "Paris"
     abbr: "par"
     type: "inland"
-    adjacent:
+    borders:
       land: ["bre", "pic", "gas", "bur"]
     display:
       unit:
@@ -663,7 +663,7 @@ territories:
   - name: "Picardy"
     abbr: "pic"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["bre", "bel"]
       land: ["bre", "bel", "bur", "par"]
       sea: ["eng"]
@@ -677,7 +677,7 @@ territories:
   - name: "Piedmont"
     abbr: "pie"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["tus", "mar"]
       land: ["tus", "ven", "tyr", "mar"]
       sea: ["lyo"]
@@ -691,7 +691,7 @@ territories:
   - name: "Portugal"
     abbr: "por"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["spa-nc", "spa-sc"]
       land: ["spa"]
       sea: ["mao"]
@@ -705,7 +705,7 @@ territories:
   - name: "Prussia"
     abbr: "pru"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["lvn", "ber"]
       land: ["lvn", "war", "ber", "sil"]
       sea: ["bal"]
@@ -719,7 +719,7 @@ territories:
   - name: "Rome"
     abbr: "rom"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["tus", "nap"]
       land: ["tus", "ven", "nap", "apu"]
       sea: ["tys"]
@@ -733,7 +733,7 @@ territories:
   - name: "Ruhr"
     abbr: "ruh"
     type: "inland"
-    adjacent:
+    borders:
       land: ["bel", "hol", "kie", "mun", "bur"]
     display:
       unit:
@@ -745,7 +745,7 @@ territories:
   - name: "Rumania"
     abbr: "rum"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["sev", "bul-ec"]
       land: ["sev", "ukr", "gal", "bud", "ser", "bul"]
       sea: ["bla"]
@@ -759,7 +759,7 @@ territories:
   - name: "Serbia"
     abbr: "ser"
     type: "inland"
-    adjacent:
+    borders:
       land: ["tri", "bud", "rum", "bul", "gre", "alb"]
     display:
       unit:
@@ -771,7 +771,7 @@ territories:
   - name: "Sevastopol"
     abbr: "sev"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["rum", "arm"]
       land: ["mos", "ukr", "arm", "rum"]
       sea: ["bla"]
@@ -785,7 +785,7 @@ territories:
   - name: "Silesia"
     abbr: "sil"
     type: "inland"
-    adjacent:
+    borders:
       land: ["ber", "mun", "boh", "gal", "war", "pru"]
     display:
       unit:
@@ -797,7 +797,7 @@ territories:
   - name: "Skagerrak"
     abbr: "ska"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["den", "swe", "nwy"]
       sea: ["nth"]
     display:
@@ -810,7 +810,7 @@ territories:
   - name: "Smyrna"
     abbr: "smy"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["con", "syr"]
       land: ["con", "ank", "arm", "syr"]
       sea: ["eas", "aeg"]
@@ -824,7 +824,7 @@ territories:
   - name: "Spain"
     abbr: "spa"
     type: "coast"
-    adjacent:
+    borders:
       land: ["por", "gas", "mar"]
     display:
       unit:
@@ -836,7 +836,7 @@ territories:
     coasts:
       - name: "North Coast"
         abbr: "nc"
-        adjacent:
+        borders:
           coast: ["gas", "por"]
           sea: ["mao"]
         display:
@@ -848,7 +848,7 @@ territories:
             y: 955.0
       - name: "South Coast"
         abbr: "sc"
-        adjacent:
+        borders:
           coast: ["por", "mar"]
           sea: ["wes", "lyo"]
         display:
@@ -861,7 +861,7 @@ territories:
   - name: "St. Petersburg"
     abbr: "stp"
     type: "coast"
-    adjacent:
+    borders:
       land: ["fin", "lvn", "mos", "nwy"]
     display:
       unit:
@@ -873,7 +873,7 @@ territories:
     coasts:
       - name: "North Coast"
         abbr: "nc"
-        adjacent:
+        borders:
           coast: ["nwy"]
           sea: ["bar"]
         display:
@@ -885,7 +885,7 @@ territories:
             y: 212.0
       - name: "South Coast"
         abbr: "sc"
-        adjacent:
+        borders:
           coast: ["fin", "lvn"]
           sea: ["bot"]
         display:
@@ -898,7 +898,7 @@ territories:
   - name: "Sweden"
     abbr: "swe"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["fin", "nwy", "den"]
       land: ["fin", "nwy", "den"]
       sea: ["bal", "bot", "ska"]
@@ -912,7 +912,7 @@ territories:
   - name: "Syria"
     abbr: "syr"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["smy"]
       land: ["smy", "arm"]
       sea: ["eas"]
@@ -926,7 +926,7 @@ territories:
   - name: "Trieste"
     abbr: "tri"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["ven", "alb"]
       land: ["ven", "tyr", "vie", "bud", "ser", "alb"]
       sea: ["adr"]
@@ -940,7 +940,7 @@ territories:
   - name: "Tunis"
     abbr: "tun"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["naf"]
       land: ["naf"]
       sea: ["ion", "tys", "wes"]
@@ -954,7 +954,7 @@ territories:
   - name: "Tuscany"
     abbr: "tus"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["rom", "pie"]
       land: ["ven", "pie", "rom"]
       sea: ["tys", "lyo"]
@@ -968,7 +968,7 @@ territories:
   - name: "Tyrolia"
     abbr: "tyr"
     type: "inland"
-    adjacent:
+    borders:
       land: ["mun", "boh", "vie", "pie", "ven", "tri"]
     display:
       unit:
@@ -980,7 +980,7 @@ territories:
   - name: "Tyrrhenian Sea"
     abbr: "tys"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["tus", "rom", "nap", "tun"]
       sea: ["lyo", "ion", "wes"]
     display:
@@ -993,7 +993,7 @@ territories:
   - name: "Ukraine"
     abbr: "ukr"
     type: "inland"
-    adjacent:
+    borders:
       land: ["mos", "war", "gal", "rum", "sev"]
     display:
       unit:
@@ -1005,7 +1005,7 @@ territories:
   - name: "Venice"
     abbr: "ven"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["tri", "apu"]
       land: ["pie", "tyr", "tri", "apu", "rom", "tus"]
       sea: ["adr"]
@@ -1019,7 +1019,7 @@ territories:
   - name: "Vienna"
     abbr: "vie"
     type: "inland"
-    adjacent:
+    borders:
       land: ["boh", "gal", "bud", "tri", "tyr"]
     display:
       unit:
@@ -1031,7 +1031,7 @@ territories:
   - name: "Wales"
     abbr: "wal"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["lvp", "lon"]
       land: ["yor", "lvp", "lon"]
       sea: ["iri", "eng"]
@@ -1045,7 +1045,7 @@ territories:
   - name: "Warsaw"
     abbr: "war"
     type: "inland"
-    adjacent:
+    borders:
       land: ["sil", "gal", "ukr", "mos", "lvn", "pru"]
     display:
       unit:
@@ -1057,7 +1057,7 @@ territories:
   - name: "Western Mediterranean"
     abbr: "wes"
     type: "sea"
-    adjacent:
+    borders:
       coast: ["spa-sc", "tun", "naf"]
       sea: ["tys", "mao", "lyo"]
     display:
@@ -1070,7 +1070,7 @@ territories:
   - name: "Yorkshire"
     abbr: "yor"
     type: "coast"
-    adjacent:
+    borders:
       coast: ["edi", "lon"]
       land: ["edi", "lvp", "lon", "wal"]
       sea: ["nth"]

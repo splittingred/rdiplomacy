@@ -10,7 +10,7 @@ class Territory < ApplicationRecord
 
   scope :for_variant, ->(variant) { where(variant:) }
   scope :with_name, ->(name) { where(name:) }
-  scope :with_abbr, ->(abbr) { where(abbr: abbr) }
+  scope :with_abbr, ->(abbr) { where(abbr:) }
 
   GEOGRAPHICAL_TYPE_INLAND = 'inland'
   GEOGRAPHICAL_TYPE_COAST = 'coast'

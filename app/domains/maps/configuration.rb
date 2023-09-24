@@ -2,8 +2,39 @@
 
 module Maps
   class Configuration
+    class Border < ::Entities::Base
+      # @!attribute [r] type
+      #   @return [String]
+      attribute(:type, ::Types::Coercible::String.default('land'))
+      # @!attribute [r] abbr
+      #   @return [String]
+      attribute(:abbr, ::Types::Coercible::String)
+
+      def land_passable?
+        type.to_s == 'land' || type.to_s == 'coast'
+      end
+
+      ##
+      # @return [Boolean]
+      #
+      def sea_passable?
+        type.to_s == 'sea' || type.to_s == 'coast'
+      end
+    end
+
     class Coast
-      attr_reader :name, :abbr, :adjacent, :display
+      # @!attribute [r] name
+      #   @return [String]
+      attr_reader :name
+      # @!attribute [r] abbr
+      #   @return [String]
+      attr_reader :abbr
+      # @!attribute [r] adjacent
+      #   @return [Hash]
+      attr_reader :adjacent
+      # @!attribute [r] display
+      #   @return [Hash]
+      attr_reader :display
 
       def initialize(yml)
         @name = yml['name'].to_s
@@ -54,7 +85,24 @@ module Maps
     end
 
     class Territory
-      attr_reader :name, :abbr, :type, :adjacent, :display, :coasts
+      # @!attribute [r] name
+      #   @return [String]
+      attr_reader :name
+      # @!attribute [r] name
+      #   @return [String]
+      attr_reader :abbr
+      # @!attribute [r] name
+      #   @return [String]
+      attr_reader :type
+      # @!attribute [r] borders
+      #   @return [Array<::Maps::Configuration::Border>]
+      attr_reader :borders
+      # @!attribute [r] display
+      #   @return [Hash]
+      attr_reader :display
+      # @!attribute [r] coasts
+      #   @return [Hash]
+      attr_reader :coasts
 
       def initialize(yml)
         @name = yml['name'].to_s
@@ -64,7 +112,12 @@ module Maps
         yml.fetch('coasts', {}).each do |c|
           @coasts[c['abbr'].to_s.downcase] = Coast.new(c)
         end
-        @adjacent = yml.fetch('adjacent', {}) # TODO: make a class
+        @borders = []
+        yml.fetch('borders', {}).each do |type, abbreviations|
+          abbreviations.each do |abbr|
+            @borders << ::Maps::Configuration::Border.new(type:, abbr:)
+          end
+        end
         @display = yml.fetch('display', {}) # TODO: make a class
       end
 

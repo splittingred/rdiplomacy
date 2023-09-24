@@ -16,10 +16,10 @@ module Variants
         # @return [Failure<Error>]
         #
         def perform(request)
-          variant_yml = load_variant_yml(request.name)
-          variant = create_variant(variant_yml)
+          variant_yml = yield load_variant_yml(request.name)
+          variant = yield create_variant(variant_yml)
           territories = yield setup_territories(variant:)
-          _borders = yield setup_borders(variant:, territories:)
+          yield create_borders(variant:, territories:)
           Success(variant)
         end
 
@@ -66,42 +66,79 @@ module Variants
           territories = {}
           # @type [MapConfiguration::Territory] territory_config
           variant.map.configuration.territories.each do |territory_abbr, territory_config|
-            territory = ::Territory.for_variant(variant).with_abbr(territory_abbr).first_or_initialize
-            territory.name = territory_config.name
-            territory.geographical_type = territory_config.type
-            territory.coast = false
-            territory.unit_x = territory_config.unit_x
-            territory.unit_y = territory_config.unit_y
-            territory.unit_dislodged_x = territory_config.dislodged_unit_x
-            territory.unit_dislodged_y = territory_config.dislodged_unit_y
-            territory.save!
-
+            territory = create_territory(variant:, abbr: territory_abbr, config: territory_config).value_or do |error|
+              raise error.message
+            end
             territories[territory.abbr.to_sym] = territory
 
             # @type [MapConfiguration::Coast] coast_config
             territory_config.coasts.each do |coast_abbr, coast_config|
               coast_full_abbr = "#{territory_abbr}-#{coast_abbr}"
-              coast = ::Territory.for_variant(variant).with_abbr(coast_full_abbr).first_or_initialize
-              coast.name = coast_config.name
-              coast.geographical_type = ::Territory::GEOGRAPHICAL_TYPE_COAST
-              coast.coast = true
-              coast.parent_territory_id = territory.id
-              coast.unit_x = coast_config.unit_x
-              coast.unit_y = coast_config.unit_y
-              coast.unit_dislodged_x = coast_config.dislodged_unit_x
-              coast.unit_dislodged_y = coast_config.dislodged_unit_y
-              coast.save!
-
+              coast = create_territory(variant:, abbr: coast_full_abbr, config: coast_config, coast: true).value_or do |error|
+                raise error.message
+              end
               territories[coast_full_abbr.to_sym] = coast
             end
           rescue StandardError => e
-            Rails.logger.error "Failed to load territory #{territory_abbr}: #{e.message}"
+            logger.error "Failed to load territory #{territory_abbr}: #{e.message}"
           end
           Success(territories)
         end
 
-        def setup_borders(variant:, territories:)
-          # TODO: setup borders
+        ##
+        # @param [Variant] variant
+        # @param [String] abbr
+        # @param [Maps::Configuration::Territory|Maps::Configuration::Coast] config
+        # @param [Boolean] coast
+        # @param [Territory] parent_territory
+        # @return [Success<Territory>]
+        # @return [Failure<Error>]
+        #
+        def create_territory(variant:, abbr:, config:, coast: false, parent_territory: nil)
+          territory = ::Territory.for_variant(variant).with_abbr(abbr).first_or_initialize
+          territory.name = config.name
+          territory.geographical_type = coast ? ::Territory::GEOGRAPHICAL_TYPE_COAST : config.type
+          territory.coast = coast
+          territory.parent_territory_id = parent_territory.id if parent_territory
+          territory.unit_x = config.unit_x
+          territory.unit_y = config.unit_y
+          territory.unit_dislodged_x = config.dislodged_unit_x
+          territory.unit_dislodged_y = config.dislodged_unit_y
+          territory.save!
+          Success(territory)
+        end
+
+        ##
+        # @param [Variant] variant
+        # @param [Hash<Symbol, Territory>] territories
+        # @return [Success]
+        # @return [Failure<Error>]
+        def create_borders(variant:, territories:)
+          variant.map.configuration.territories.each do |territory_abbr, config|
+            puts "Creating borders for #{territory_abbr} - #{config.borders.count}"
+            config.borders.each do |border_config|
+              border = ::Border
+                 .for_variant(variant)
+                 .joins(:from_territory, :to_territory)
+                 .where(
+                   '(territories.abbr = ? AND to_territories_borders.abbr = ?) OR (territories.abbr = ? AND to_territories_borders.abbr = ?)',
+                   territory_abbr,
+                   border_config.abbr,
+                   border_config.abbr,
+                   territory_abbr
+                 )
+                 .first
+              unless border
+                border = ::Border.new
+                border.variant = variant
+                border.from_territory = territories.fetch(territory_abbr.to_sym)
+                border.to_territory = territories.fetch(border_config.abbr.to_sym)
+              end
+              border.sea_passable = border_config.sea_passable?
+              border.land_passable = border_config.land_passable?
+              border.save!
+            end
+          end
           Success()
         end
       end

@@ -78,14 +78,14 @@ class Order < ApplicationRecord
   #
   def to_intended
     IntendedOrder.new(
+      order: self,
       game:,
       turn:,
+      move_type:,
       country:,
       player:,
-      convoyed:,
-      unit_position:,
       unit: unit_position.unit,
-      move_type:,
+      unit_position:,
       from_territory:,
       to_territory:,
       assistance_territory:

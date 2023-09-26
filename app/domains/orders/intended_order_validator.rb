@@ -51,7 +51,7 @@ module Orders
     # @return [Boolean]
     #
     def validate_support_hold(order:, errors:)
-      return true if order.unit.can_support_hold?(order.to_territory)
+      return true if order.unit.can_support_hold_at?(order.to_territory)
 
       order.invalidate!
       errors.add(:base, 'Unit cannot support that territory')
@@ -64,7 +64,7 @@ module Orders
     # @return [Boolean]
     #
     def validate_support_move(order:, errors:)
-      return true if order.unit.can_support_move?(from_territory: order.from_territory, to_territory: order.to_territory)
+      return true if order.unit.can_support_move_to?(order.to_territory)
 
       order.invalidate!
       errors.add(:base, 'Unit cannot support that territory to move there')

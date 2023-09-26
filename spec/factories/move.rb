@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :move, class: 'Games::Move' do
+  factory :move do
     game
     country
     player

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :unit_position, class: 'Games::UnitPosition' do
+  factory :unit_position do
     unit
     turn
     territory

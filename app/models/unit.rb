@@ -24,28 +24,38 @@ class Unit < ApplicationRecord
   # @param [Territory] territory
   # @return [Boolean]
   #
-  def can_move_to?(territory)
-    # TODO: Store borders so can look this up here
-    true
+  def adjacent_to?(territory)
+    unit_position.adjacent_to?(territory)
   end
 
   ##
+  # If a unit is adjacent to a territory, and the territory can be occupied by that type of unit, it can move there.
+  #
   # @param [Territory] territory
   # @return [Boolean]
   #
-  def can_support_hold?(territory)
-    # TODO: Store borders so can look this up here
-    true
+  def can_move_to?(territory)
+    adjacent_to?(territory) && territory.can_be_occupied_by?(self)
   end
 
   ##
-  # @param [Territory] from_territory
+  # If a unit can move to a territory, it can support a hold there.
+  #
+  # @param [Territory] territory
+  # @return [Boolean]
+  #
+  def can_support_hold_at?(territory)
+    can_move_to?(territory)
+  end
+
+  ##
+  # If a unit can move to a territory, it can support a move to there.
+  #
   # @param [Territory] to_territory
   # @return [Boolean]
   #
-  def can_support_move?(from_territory:, to_territory:)
-    # TODO: Store borders so can look this up here
-    true
+  def can_support_move_to?(to_territory)
+    can_move_to?(to_territory)
   end
 
   ##
@@ -54,7 +64,8 @@ class Unit < ApplicationRecord
   # @return [Boolean]
   #
   def can_convoy?(from_territory:, to_territory:)
-    # TODO: Store borders so can look this up here
+    # TODO: This will require being able to trace a path between two territories, and checking that the path is
+    #   entirely occupied by fleets
     true
   end
 

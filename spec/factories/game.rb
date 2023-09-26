@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :game, class: 'Games::Game' do
+  factory :game, class: 'Game' do
     variant
 
     name { FFaker.name }

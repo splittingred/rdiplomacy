@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :turn, class: 'Games::Turn' do
+  factory :turn do
     game
 
     year { 1901 }

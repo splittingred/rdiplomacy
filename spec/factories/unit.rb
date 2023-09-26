@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :unit, class: 'Games::Unit' do
+  factory :unit do
     game
     country
 

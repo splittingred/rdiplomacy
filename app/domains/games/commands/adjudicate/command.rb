@@ -9,8 +9,11 @@ module Games
       class Command < ::RDiplomacy::Command
         # @!attribute [r] order_validator
         #   @return [Orders::IntendedOrderValidator]
+        # @!attribute [r] adjudication_service
+        #   @return [Orders::AdjudicationService]
         include ::Rdiplomacy::Deps[
-          order_validator: 'orders.intended_order_validator'
+          order_validator: 'orders.intended_order_validator',
+          adjudication_service: 'orders.adjudication_service'
         ]
 
         ##
@@ -40,7 +43,7 @@ module Games
         #
         def validate_orders(orders)
           orders.each do |order|
-            order_validator.call(order: order)
+            order_validator.call(order:)
           end
           Success()
         end
@@ -51,8 +54,9 @@ module Games
         # @return [Failure<Error>]
         #
         def adjudicate_orders(orders)
-          # TODO: resolve orders
-          Success()
+          valid_orders = orders.filter { |_, order| order.valid? }
+          collection = Entities::IntendedOrders.new(valid_orders)
+          adjudication_service.call(collection)
         end
       end
     end

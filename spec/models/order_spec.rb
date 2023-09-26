@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Games::Order do
+describe Order do
   let(:variant) { build(:variant) }
   let(:game) { build(:game, variant:) }
   let(:turn_1) { build(:turn, :S1901, game:) }

@@ -4,6 +4,12 @@ module Entities
   class IntendedOrders
     include ::Enumerable
 
+    SELF_STRENGTH = 1
+
+    # @!attribute [r] orders
+    #   @return [Hash{Symbol, IntendedOrder}]
+    attr_reader :orders
+
     ##
     # @param [Hash{Symbol, IntendedOrder}] orders
     #
@@ -24,21 +30,22 @@ module Entities
     # @yield [IntendedOrder]
     #
     def each(&)
-      @orders.each_value(&)
+      @orders.values.each(&)
     end
 
     ##
-    # @param [Territory] territory
+    # @param [String|Territory] territory
     # @return [Array<IntendedOrder>]
     def moves_to(territory)
-      @moves[territory.abbr] || []
+      @moves[(territory.is_a?(Territory) ? territory.abbr : territory)] || []
     end
 
     ##
+    # @param [String|Territory] territory
     # @return [IntendedOrder]
     # @return [NilClass] if no order is coming from a unit at that territory
     def from(territory)
-      @orders[territory.abbr]
+      @orders[(territory.is_a?(Territory) ? territory.abbr : territory)]
     end
 
     ##
@@ -53,7 +60,7 @@ module Entities
       # if a unit doesn't exist here, or is moving, it has effective 0 hold strength
       return 0 if unit_order_at.nil? || unit_order_at.move?
 
-      supporting_hold_strength(at) + 1 # 1 for the unit itself
+      supporting_hold_strength(at) + SELF_STRENGTH
     end
 
     ##
@@ -86,29 +93,48 @@ module Entities
     # @return [Integer]
     #
     def move_strength_to(to:, country:)
-      move_support_strength_to(to:, country:) + 1
+      move_support_strength_to(to:, country:) + SELF_STRENGTH
     end
 
     ##
     # Determine the support strength of a move to a given territory. If the order of support to that territory is
     # cut by something moving against it, subtract that from the total.
     #
-    # @param [Territory] to
-    # @param [Country] country The country calculating move support for
+    # @param [Territory|String] to
+    # @param [Country|String] country The country calculating move support for
     # @return [Integer]
     def move_support_strength_to(to:, country:)
-      @support_moves[to.abbr]&.reject { |o| o.country != country || support_cut?(at: o.assistance_territory, country:) }&.size.to_i || 0
+      to = to.abbr if to.is_a?(Territory)
+      country = country.abbr if country.is_a?(Country)
+      @support_moves[to]&.reject do |o|
+        o.country.abbr != country || support_cut?(at: o.assistance_territory, country:)
+      end&.size.to_i || 0
+    end
+
+    ##
+    # Determine if a territory is occupied by a unit. Essentially, if an order comes from a territory, we can
+    # assume that territory is occupied. (This works because we process NMRs as holds, effectively, so every territory
+    # with a unit in it gets an order.)
+    #
+    # @param [Territory] territory
+    # @return [Boolean]
+    #
+    def territory_occupied?(territory)
+      territory = territory.abbr if territory.is_a?(Territory)
+      @orders.key?(territory)
     end
 
     ##
     # If there are any moves to a territory, its support is effectively cut
     #
-    # @param [Territory] at The country to
-    # @param [Country] country The country calculating support cut for
+    # @param [Territory|String] at The country that is supporting
+    # @param [Country|String] country The country calculating support cut for
     # @return [Boolean]
     #
     def support_cut?(at:, country:)
-      @moves[at.abbr]&.any? { |o| o.country != country }
+      at = at.abbr if at.is_a?(Territory)
+      country = country.abbr if country.is_a?(Country)
+      @moves[at]&.any? { |o| o.country.abbr != country } || false
     end
 
     private

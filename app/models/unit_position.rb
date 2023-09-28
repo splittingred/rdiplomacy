@@ -4,13 +4,13 @@
 # Represents a unit position during a single turn
 #
 class UnitPosition < ApplicationRecord
-  # @!attribute [r] turn
+  # @!attribute turn
   #   @return [Turn]
   belongs_to :turn
-  # @!attribute [r] unit
+  # @!attribute unit
   #   @return [Unit]
   belongs_to :unit
-  # @!attribute [r] territory
+  # @!attribute territory
   #   @return [Territory]
   belongs_to :territory
 

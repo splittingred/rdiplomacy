@@ -118,16 +118,16 @@ module Variants
             puts "Creating borders for #{territory_abbr} - #{config.borders.count}"
             config.borders.each do |border_config|
               border = ::Border
-                 .for_variant(variant)
-                 .joins(:from_territory, :to_territory)
-                 .where(
-                   '(territories.abbr = ? AND to_territories_borders.abbr = ?) OR (territories.abbr = ? AND to_territories_borders.abbr = ?)',
-                   territory_abbr,
-                   border_config.abbr,
-                   border_config.abbr,
-                   territory_abbr
-                 )
-                 .first
+                       .for_variant(variant)
+                       .joins(:from_territory, :to_territory)
+                       .where(
+                         '(territories.abbr = ? AND to_territories_borders.abbr = ?) OR (territories.abbr = ? AND to_territories_borders.abbr = ?)',
+                         territory_abbr,
+                         border_config.abbr,
+                         border_config.abbr,
+                         territory_abbr
+                       )
+                       .first
               unless border
                 border = ::Border.new
                 border.variant = variant

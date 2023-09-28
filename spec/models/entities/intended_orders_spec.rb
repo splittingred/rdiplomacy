@@ -1,26 +1,8 @@
 # frozen_string_literal: true
 
-describe Entities::IntendedOrders do
+describe Entities::IntendedOrders, countries: :classic, territories: :classic do
   let(:ios) { described_class.new(orders) }
 
-  # TODO: figure out how to lazily generate these via annotations on the describe block
-  let(:t_apu) { build(:territory, :apu) }
-  let(:t_ion) { build(:territory, :ion) }
-  let(:t_nap) { build(:territory, :nap) }
-  let(:t_rom) { build(:territory, :rom) }
-  let(:t_tus) { build(:territory, :tus) }
-  let(:t_ven) { build(:territory, :ven) }
-  let(:t_gre) { build(:territory, :gre) }
-  let(:t_eas) { build(:territory, :eas) }
-  let(:t_adr) { build(:territory, :adr) }
-  let(:t_aeg) { build(:territory, :aeg) }
-  let(:t_syr) { build(:territory, :syr) }
-  let(:t_pie) { build(:territory, :pie) }
-  let(:t_tys) { build(:territory, :tys) }
-  let(:t_tun) { build(:territory, :tun) }
-
-  let(:country_ita) { build(:country, :italy) }
-  let(:country_fra) { build(:country, :france) }
   let(:orders) do
     {
       ven: build(:intended_order, :hold, from_territory: t_ven, country: country_ita), # F VEN H - unsupported hold
@@ -255,7 +237,7 @@ describe Entities::IntendedOrders do
 
     let(:orders) do
       {
-        nap: build(:intended_order, :move, from_territory: t_nap, to_territory: t_ion, country: country_ita), # F Nap - ION
+        nap: build(:intended_order, :move, from_territory: t_nap, to_territory: t_ion, country: country_ita) # F Nap - ION
       }
     end
 
@@ -282,7 +264,7 @@ describe Entities::IntendedOrders do
       context 'when one support is cut' do
         let(:orders) do
           super().merge(
-            tun: build(:intended_order, :move, from_territory: t_tun, to_territory: t_tys, country: country_fra), # FRA F Tun -> TYS
+            tun: build(:intended_order, :move, from_territory: t_tun, to_territory: t_tys, country: country_fra) # FRA F Tun -> TYS
           )
         end
 

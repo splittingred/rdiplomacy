@@ -5,7 +5,10 @@ FactoryBot.define do
     unit
     turn
     territory
-
     dislodged { false }
+
+    trait :dislodged do
+      dislodged { true }
+    end
   end
 end

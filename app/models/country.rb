@@ -4,11 +4,16 @@
 # Represents a country in a game
 #
 class Country < ApplicationRecord
+  # @!attribute game
+  #   @return [Game]
   belongs_to :game
-
-  # countries can have more than one player, but only one at a time (subbing allowed)
+  # Countries can have more than one player, but only one at a time (subbing allowed)
+  # @!attribute players
+  #   @return [ActiveRecord::Associations::CollectionProxy<Player>]
   has_many :players, dependent: :destroy
-
+  # @!attribute current_player
+  #   @return [Player]
+  #   @return [NilClass]
   has_one :current_player, class_name: 'Player'
 
   scope :for_game, ->(game) { where(game:) }

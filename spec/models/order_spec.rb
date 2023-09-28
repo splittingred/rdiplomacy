@@ -4,7 +4,7 @@ describe Order do
   let(:variant) { build(:variant) }
   let(:game) { build(:game, variant:) }
   let(:turn_1) { build(:turn, :S1901, game:) }
-  let(:country_ita) { build(:country, :italy, game:) }
+  let(:country_ita) { build(:country, :ita, game:) }
   let(:player_1) { build(:player, game:, country: country_ita) }
   let(:from_territory) { build(:territory, :nap, variant:) }
   let(:to_territory) { build(:territory, :ion, variant:) }

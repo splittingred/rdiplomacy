@@ -17,7 +17,7 @@ module Variants
     # @return [Failure<Error>]
     #
     def import!(name:)
-      request = ::Variants::Commands::Import::Request.new(name: name)
+      request = ::Variants::Commands::Import::Request.new(name:)
       import_cmd.call(request)
     end
   end

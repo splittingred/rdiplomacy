@@ -28,7 +28,8 @@ class Order < ApplicationRecord
   # @!attribute to_territory
   #   @return [Territory]
   belongs_to :to_territory, class_name: 'Territory'
-
+  # @!attribute unit
+  #   @return [Unit]
   has_one :unit, through: :unit_position
 
   scope :for_game, ->(game) { where(game:) }
@@ -53,20 +54,20 @@ class Order < ApplicationRecord
     country_prefix = country_prefix ? "#{country.to_s.upcase} " : ''
     unit = unit_position.unit.to_s
     case move_type.to_s.downcase
-    when 'hold' # A Sev H
+    when Order::TYPE_HOLD # A Sev H
       "#{country_prefix}#{unit} #{from_territory} H"
-    when 'move', 'retreat' # A Kie - Mun
+    when Order::TYPE_MOVE, Order::TYPE_RETREAT # A Kie - Mun
       "#{country_prefix}#{unit} #{from_territory} - #{to_territory}"
-    when 'support-hold' # F Ion S Nap H
+    when Order::TYPE_SUPPORT_HOLD # F Ion S Nap H
       supported_country_prefix = '' # TODO: Add country prefix for multi-country supports
       "#{country_prefix}#{unit} #{assistance_territory} S #{supported_country_prefix}#{from_territory} H"
-    when 'support-move' # F Aeg S Ion - Eas
+    when Order::TYPE_SUPPORT_MOVE # F Aeg S Ion - Eas
       supported_country_prefix = '' # TODO: Add country prefix for multi-country supports
       "#{country_prefix}#{unit} #{assistance_territory} S #{supported_country_prefix}#{from_territory} - #{to_territory}"
-    when 'convoy' # F Ion C Nap - Tun
+    when Order::TYPE_CONVOY # F Ion C Nap - Tun
       convoyed_country_prefix = '' # TODO: Add country prefix for multi-country convoys
       "#{country_prefix}#{unit} #{assistance_territory} C #{convoyed_country_prefix}#{from_territory} - #{to_territory}"
-    when 'build', 'disband' # F Ven
+    when Order::TYPE_DISBAND, Order::TYPE_BUILD # F Ven
       "#{country_prefix}#{unit} #{from_territory}"
     else
       ''

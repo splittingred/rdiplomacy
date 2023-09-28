@@ -6,81 +6,74 @@ module Orders
 
     ##
     # @param [IntendedOrder] order
-    # @return [Success<order>]
-    # @return [Failure<ActiveModel::Errors>]
+    # @return [Success<IntendedOrder>]
+    # @return [Failure<Error>]
     #
     def call(order:)
-      errors = ::ActiveModel::Errors.new(order)
-      errors.add(:base, 'Order is not valid') unless order.valid?
-
       case order.move_type
       when Order::TYPE_HOLD
         # holds always succeed, no-op here
       when Order::TYPE_MOVE
-        validate_move(order:, errors:)
+        validate_move(order)
       when Order::TYPE_SUPPORT_HOLD
-        validate_support_hold(order:, errors:)
+        validate_support_hold(order)
       when Order::TYPE_SUPPORT_MOVE
-        validate_support_move(order:, errors:)
+        validate_support_move(order)
       when Order::TYPE_CONVOY
-        validate_support_convoy(order:, errors:)
+        validate_support_convoy(order)
       else
-        errors.add(:base, 'Order type is not valid')
+        order.invalidate!(code: :move_type, message: 'Order type is not valid')
       end
-      errors.any? ? Failure(errors) : Success(order)
+
+      return Failure(Error.new(code: :invalid_order, message: "Invalid order: #{order.errors.full_messages.join(', ')}")) if order.invalid?
+
+      order.validate!
+      Success(order)
     end
 
     private
 
     ##
     # @param [IntendedOrder] order
-    # @param [ActiveModel::Errors] errors
     # @return [Boolean]
     #
-    def validate_move(order:, errors:)
-      return true if order.unit.can_move_to?(order.to_territory)
+    def validate_move(order)
+      return true if order.valid_move?
 
-      order.invalidate!
-      errors.add(:base, 'Unit cannot move to that territory')
+      order.invalidate!(code: :to_territory, message: 'Unit cannot move to that territory')
       false
     end
 
     ##
     # @param [IntendedOrder] order
-    # @param [ActiveModel::Errors] errors
     # @return [Boolean]
     #
-    def validate_support_hold(order:, errors:)
-      return true if order.unit.can_support_hold_at?(order.to_territory)
+    def validate_support_hold(order)
+      return true if order.unit.can_support_hold_at?(at: order.to_territory, turn: order.turn)
 
-      order.invalidate!
-      errors.add(:base, 'Unit cannot support that territory')
+      order.invalidate!(code: :to_territory, message: 'Unit cannot support that territory')
       false
     end
 
     ##
     # @param [IntendedOrder] order
-    # @param [ActiveModel::Errors] errors
     # @return [Boolean]
     #
-    def validate_support_move(order:, errors:)
-      return true if order.unit.can_support_move_to?(order.to_territory)
+    def validate_support_move(order)
+      return true if order.unit.can_support_move_to?(to: order.to_territory, turn: order.turn)
 
-      order.invalidate!
-      errors.add(:base, 'Unit cannot support that territory to move there')
+      order.invalidate!(code: :to_territory, message: 'Unit cannot support that territory')
       false
     end
 
     ##
     # @param [IntendedOrder] order
-    # @param [ActiveModel::Errors] errors
     # @return [Boolean]
     #
-    def validate_support_convoy(order:, errors:)
-      return true if order.unit.can_convoy?(from_territory: order.from_territory, to_territory: order.to_territory)
+    def validate_support_convoy(order)
+      return true if order.unit.can_convoy?(from: order.from_territory, to: order.to_territory, turn: order.turn)
 
-      order.invalidate!
-      errors.add(:base, 'Unit cannot convoy that unit to that territory')
+      order.invalidate!(code: :to_territory, message: 'Unit cannot convoy that unit to that territory')
       false
     end
   end

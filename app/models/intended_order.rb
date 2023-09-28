@@ -8,7 +8,8 @@ class IntendedOrder < ::Entities::Base
   STATUS_PENDING = 'pending'
   STATUS_SUCCESS = 'success'
   STATUS_FAILURE = 'failure'
-  STATUS_INVALID = 'invalid'
+
+  include Errorable
 
   # @!attribute [r] order
   #  @return [Order]
@@ -44,9 +45,12 @@ class IntendedOrder < ::Entities::Base
   #   @return [Territory]
   #   @return [NilClass] if no assisting territory in the order
   attribute(:assistance_territory, Types.Instance(::Object).optional)
+  # @!attribute valid
+  #  @return [Boolean]
+  attribute(:valid, Types::Bool.default(true))
   # @!attribute status
   #  @return [String]
-  attribute(:status, Types::Strict::String.default(STATUS_PENDING).enum(STATUS_PENDING, STATUS_SUCCESS, STATUS_FAILURE, STATUS_INVALID))
+  attribute(:status, Types::Strict::String.default(STATUS_PENDING).enum(STATUS_PENDING, STATUS_SUCCESS, STATUS_FAILURE))
 
   ##
   # @return [String]
@@ -77,6 +81,20 @@ class IntendedOrder < ::Entities::Base
   ##
   # @return [Boolean]
   #
+  def unit_dislodged?
+    unit_position.dislodged?
+  end
+
+  ##
+  # @return [Boolean]
+  #
+  def valid_move?
+    from_territory.adjacent_to?(to_territory) && to_territory.can_be_occupied_by?(unit)
+  end
+
+  ##
+  # @return [Boolean]
+  #
   def move?
     move_type == Order::TYPE_MOVE
   end
@@ -88,11 +106,27 @@ class IntendedOrder < ::Entities::Base
     move_type == Order::TYPE_HOLD
   end
 
+  def invalidate!(code:, message:)
+    self.valid = false
+    errors.add(code, message)
+  end
+
+  def validate!
+    self.valid = true
+  end
+
   ##
   # @return [Boolean]
   #
   def valid?
-    status == STATUS_SUCCESS
+    valid == true
+  end
+
+  ##
+  # @return [Boolean]
+  #
+  def invalid?
+    !valid?
   end
 
   ##
@@ -103,10 +137,17 @@ class IntendedOrder < ::Entities::Base
   end
 
   ##
-  # Invalidate the order
+  # @return [Boolean]
   #
-  def invalidate!
-    self.status = STATUS_INVALID
+  def successful?
+    status == STATUS_SUCCESS
+  end
+
+  ##
+  # @return [Boolean]
+  #
+  def failed?
+    status == STATUS_FAILURE
   end
 
   ##
@@ -119,12 +160,13 @@ class IntendedOrder < ::Entities::Base
   ##
   # Fail the move
   #
+  # @param [Symbol] attr
   # @param [Symbol] code
   # @param [String] message
   #
-  def fail!(code:, message:)
+  def fail!(attr, code, message = '')
     self.status = IntendedOrder::STATUS_FAILURE
-    errors.add(code, message)
+    errors.add(attr, code, message:)
   end
 
   ##

@@ -4,8 +4,12 @@
 # Represents a territory (or place that a unit can go) in a game variant
 #
 class Territory < ApplicationRecord
+  # @!attribute variant
+  #  @return [Variant]
   belongs_to :variant
-  has_many :borders
+  # @!attribute parent_territory
+  #  @return [Territory]
+  #  @return [NilClass] if this territory does not have a parent territory (e.g. not a coast sub-territory)
   belongs_to :parent_territory, class_name: 'Territory', optional: true
 
   scope :for_variant, ->(variant) { where(variant:) }
@@ -26,12 +30,33 @@ class Territory < ApplicationRecord
   end
 
   ##
+  # @return [Array<Border>]
+  #
+  def borders
+    Border.for_variant(variant_id).with_territory(self).joins(
+      'INNER JOIN territories from_territories ON borders.from_territory_id = from_territories.id'
+    ).joins(
+      'INNER JOIN territories to_territories ON borders.to_territory_id = to_territories.id'
+    ).select('borders.*, from_territories.abbr as from_territory_abbr, to_territories.abbr as to_territory_abbr')
+  end
+
+  ##
+  # @return [Array<String>] An array of territory abbreviations that this territory borders
+  #
+  def border_abbrs
+    borders.each_with_object([]) do |border, abbrs|
+      abbrs << border.from_territory_abbr if border.from_territory_abbr != abbr
+      abbrs << border.to_territory_abbr if border.to_territory_abbr != abbr
+    end
+  end
+
+  ##
   # @param [Territory|String] territory
   # @return [Boolean]
   #
   def adjacent_to?(territory)
     abbr = territory.is_a?(::Territory) ? territory.abbr : territory.to_s
-    borders.pluck(:abbreviation).include?(abbr)
+    border_abbrs.include?(abbr)
   end
 
   ##
@@ -39,7 +64,8 @@ class Territory < ApplicationRecord
   # @return [Boolean]
   #
   def can_be_occupied_by?(unit)
-    OCCUPIABLE_BY[unit.unit_type.to_sym].include?(geographical_type)
+    unit_type = unit.is_a?(String) || unit.is_a?(Symbol) ? unit.to_sym : unit.unit_type.to_sym
+    OCCUPIABLE_BY[unit_type].include?(geographical_type)
   end
 
   def inland?

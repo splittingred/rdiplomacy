@@ -29,7 +29,7 @@ module Variants
       Variants::Configuration::Opts.new(
         start_year: options.fetch('start_year', 1_901).to_i,
         start_season: options.fetch('start_season', 'SPRING').to_s.upcase,
-        turn_length: options.fetch('turn_length', 86_400).to_i,
+        turn_length: options.fetch('turn_length', 86_400).to_i
       )
     end
 

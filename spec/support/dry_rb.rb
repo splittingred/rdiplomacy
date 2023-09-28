@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'dry/system/stubs'
+
 # Helpers for various registered components and accessors
 module DryHelpers
   def app_container

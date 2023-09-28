@@ -10,7 +10,7 @@ namespace :test_data do
     games_service = ::Rdiplomacy::Container['games.service']
     variants_service = ::Rdiplomacy::Container['variants.service']
     variant = variants_service.import!(name: 'classic').value_or do |err|
-      fail "Failed to import classic variant: #{err.message}"
+      raise "Failed to import classic variant: #{err.message}"
     end
 
     # create game record

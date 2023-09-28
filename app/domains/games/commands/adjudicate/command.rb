@@ -22,8 +22,9 @@ module Games
         def perform(request)
           orders = yield fetch_intended_orders(request)
           yield validate_orders(orders)
-          yield adjudicate_orders(orders)
-          Success()
+          orders = yield adjudicate_orders(orders)
+          moves = yield resolve_orders(orders)
+          Success(moves:, orders:)
         end
 
         private
@@ -42,7 +43,7 @@ module Games
         # @return [Failure<Error>]
         #
         def validate_orders(orders)
-          orders.each do |order|
+          orders.each_value do |order|
             order_validator.call(order:)
           end
           Success()
@@ -54,9 +55,36 @@ module Games
         # @return [Failure<Error>]
         #
         def adjudicate_orders(orders)
-          valid_orders = orders.filter { |_, order| order.valid? }
-          collection = Entities::IntendedOrders.new(valid_orders)
+          collection = ::Entities::IntendedOrders.new(orders)
           adjudication_service.call(collection)
+        end
+
+        ##
+        # @param [Entities::IntendedOrders] orders
+        #
+        def resolve_orders(orders)
+          moves = []
+          # @type [IntendedOrder] order
+          orders.each do |order|
+            move = Move.for_order(order.order).first_or_initialize
+            move.order = order.order
+            move.game = order.game
+            move.country = order.country
+            move.turn = order.turn
+            move.player = order.player
+            move.unit_position = order.unit_position
+            move.move_type = order.move_type
+            move.from_territory = order.from_territory
+            move.to_territory = order.to_territory
+            move.assistance_territory = order.assistance_territory
+            move.convoyed = false # TODO: Finish convoy status
+            move.successful = order.successful?
+            move.dislodged = false # TODO: Finish dislodged status
+            # TODO: Store adjudication errors as a human-readable string? Maybe codes too?
+            # move.save!
+            moves << move
+          end
+          Success(moves)
         end
       end
     end

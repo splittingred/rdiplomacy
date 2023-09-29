@@ -10,7 +10,9 @@ AllCops:
     - vendor/**/*
     - tmp/**/*
 require:
+  - rubocop-factory_bot
   - rubocop-performance
+  - rubocop-rails
   - rubocop-rspec
 
 Layout/LineLength:
@@ -52,6 +54,10 @@ Style/Documentation:
 Naming/MethodParameterName:
   Enabled: false
 
+# Rails
+Rails/I18nLocaleTexts:
+  Enabled: false
+
 # Spec
 RSpec/NamedSubject:
   Enabled: false
@@ -63,4 +69,7 @@ RSpec/NestedGroups:
   Enabled: false
 
 RSpec/MultipleExpectations:
+  Enabled: false
+
+FactoryBot/FactoryAssociationWithStrategy:
   Enabled: false

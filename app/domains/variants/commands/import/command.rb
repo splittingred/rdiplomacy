@@ -16,26 +16,26 @@ module Variants
         # @return [Failure<Error>]
         #
         def perform(request)
-          variant_yml = yield load_variant_yml(request.name)
+          variant_yml = yield load_variant_yml(request.abbr)
           variant = yield create_variant(variant_yml)
-          territories = yield setup_territories(variant:)
-          yield create_borders(variant:, territories:)
+          yield setup_territories(variant:)
+          yield create_borders(variant:)
           Success(variant)
         end
 
         private
 
         ##
-        # @param [String] variant_name
+        # @param [String] variant_abbr
         # @return [Success<Hash>]
         # @return [Failure<Error>]
         #
-        def load_variant_yml(variant_name)
-          variant_file = Rails.root.join('app', 'configuration', 'variants', "#{variant_name}.yml")
+        def load_variant_yml(variant_abbr)
+          variant_file = Rails.root.join('app', 'configuration', 'variants', "#{variant_abbr}.yml")
           logger.info "Loading variant configuration at #{variant_file}"
           Success(YAML.safe_load_file(variant_file))
         rescue StandardError => e
-          logger.error "Failed to import variant #{variant_name}: #{e.message}"
+          logger.error "Failed to import variant #{variant_abbr}: #{e.message}"
           Failure(Error.from_exception(e))
         end
 
@@ -110,29 +110,18 @@ module Variants
 
         ##
         # @param [Variant] variant
-        # @param [Hash<Symbol, Territory>] territories
         # @return [Success]
         # @return [Failure<Error>]
-        def create_borders(variant:, territories:)
+        def create_borders(variant:)
           variant.map.configuration.territories.each do |territory_abbr, config|
-            puts "Creating borders for #{territory_abbr} - #{config.borders.count}"
+            logger.debug { "Creating borders for #{territory_abbr} - #{config.borders.count}" }
             config.borders.each do |border_config|
-              border = ::Border
-                       .for_variant(variant)
-                       .joins(:from_territory, :to_territory)
-                       .where(
-                         '(territories.abbr = ? AND to_territories_borders.abbr = ?) OR (territories.abbr = ? AND to_territories_borders.abbr = ?)',
-                         territory_abbr,
-                         border_config.abbr,
-                         border_config.abbr,
-                         territory_abbr
-                       )
-                       .first
+              border = ::Border.for_variant(variant).with_territories(territory_abbr.to_s, border_config.abbr.to_s).first
               unless border
                 border = ::Border.new
                 border.variant = variant
-                border.from_territory = territories.fetch(territory_abbr.to_sym)
-                border.to_territory = territories.fetch(border_config.abbr.to_sym)
+                border.from_territory_abbr = territory_abbr.to_s
+                border.to_territory_abbr = border_config.abbr.to_s
               end
               border.sea_passable = border_config.sea_passable?
               border.land_passable = border_config.land_passable?

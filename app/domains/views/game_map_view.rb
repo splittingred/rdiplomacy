@@ -26,10 +26,10 @@ module Views
     # @param [Integer|NilClass] year
     # @param [String|NilClass] season
     #
-    def initialize(game_id:, year: 1901, season: 'SPRING')
+    def initialize(game_id:, year: nil, season: nil)
       @game_id = game_id.to_i
       @year = year.to_i
-      @season = season.to_s
+      @season = season.to_s.upcase
       super
     end
 
@@ -42,9 +42,9 @@ module Views
     def call
       @game = yield find_game(@game_id)
       @turn = yield find_turn(game: @game, year: @year, season: @season)
-      @map = yield render_map(game: @game)
-      @orders = yield load_order_register(game: @game, turn: @turn)
-      @units = yield load_units(game: @game, turn: @turn)
+      @map = yield render_map(turn: @turn)
+      @orders = yield load_order_register(turn: @turn)
+      @units = yield load_units(turn: @turn)
       @territories = yield load_territories(game: @game)
       Success(self)
     end
@@ -69,40 +69,39 @@ module Views
     #
     def find_turn(game:, year: nil, season: nil)
       q = ::Turn.for_game(game)
-      q = year.present? || season.nil? ? q.current : q.by_season(season).by_year(year)
+      q = year.to_i.positive? && season.to_s.present? ? q.by_season(season).by_year(year) : q.current
       Success(q.first!)
     end
 
     ##
-    # @param [Game] game
     # @param [Turn] turn
     # @return [Success<Entities::OrderRegister>]
     # @return [Failure<Error>]
     #
-    def load_order_register(game:, turn:)
-      container['games.orders_service'].find_register(game:, turn:)
+    def load_order_register(turn:)
+      container['games.orders_service'].find_register(turn:)
     end
 
     ##
-    # @param [Game] game
+    # @param [Turn] turn
     # @return [Success<Map>]
     # @return [Failure<Error>]
     #
-    def render_map(game:)
-      container['games.map_rendering_service'].render(game:, turn: game.current_turn)
+    def render_map(turn:)
+      container['games.map_rendering_service'].render(turn:)
     end
 
     ##
-    # @param [Game] game
     # @param [Turn] turn
     # @return [Success<Hash>]
     # @return [Failure<Error>]
     #
-    def load_units(game:, turn:)
-      map_config = game.map.configuration
+    def load_units(turn:)
+      map_config = turn.game.map.configuration
       positions = ::UnitPosition
                   .joins(unit: [:country], territory: [])
                   .on_turn(turn)
+                  .where(units: { status: ::Unit::STATUS_ACTIVE })
                   .select('unit_positions.*, units.unit_type, countries.abbr AS country_abbr, countries.color AS country_color, territories.abbr AS unit_territory_abbr')
       Success(
         positions.each_with_object({}) do |co, units|

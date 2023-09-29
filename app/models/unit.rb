@@ -3,6 +3,20 @@
 ##
 # Represents a unit in-game, such as a fleet or army.
 #
+# @!attribute id
+#   @return [Integer]
+# @!attribute game_id
+#   @return [Integer]
+# @!attribute country_id
+#   @return [Integer]
+# @!attribute unit_type
+#   @return [String]
+# @!attribute status
+#   @return [String]
+# @!attribute created_at
+#   @return [DateTime]
+# @!attribute updated_at
+#   @return [DateTime]
 class Unit < ApplicationRecord
   # @!attribute game
   #   @return [Game]
@@ -16,10 +30,18 @@ class Unit < ApplicationRecord
 
   scope :for_game, ->(game) { where(game:) }
   scope :for_country, ->(country) { where(country:) }
+  scope :active, -> { where(status: STATUS_ACTIVE) }
+  scope :disbanded, -> { where(status: STATUS_DISBANDED) }
+  scope :of_type, ->(unit_type) { where(unit_type:) }
+  scope :army, -> { where(unit_type: TYPE_ARMY) }
+  scope :fleet, -> { where(unit_type: TYPE_FLEET) }
 
   TYPE_ARMY = 'army'
   TYPE_FLEET = 'fleet'
   UNIT_TYPES = [TYPE_ARMY, TYPE_FLEET].freeze
+
+  STATUS_ACTIVE = 'active'
+  STATUS_DISBANDED = 'disbanded'
 
   ##
   # @param [Boolean] country_prefix
@@ -37,7 +59,7 @@ class Unit < ApplicationRecord
   #
   def adjacent_to?(to:, turn:)
     up = unit_positions.on_turn(turn).first
-    up&.adjacent_to?(to)
+    up&.adjacent_to?(to) || false
   end
 
   ##
@@ -49,17 +71,6 @@ class Unit < ApplicationRecord
   #
   def can_move_to?(to:, turn:)
     adjacent_to?(to:, turn:) && territory.can_be_occupied_by?(self)
-  end
-
-  ##
-  # If a unit can move to a territory, it can support a hold there.
-  #
-  # @param [Territory] at
-  # @param [Turn]
-  # @return [Boolean]
-  #
-  def can_support_hold_at?(at:, turn:)
-    can_move_to?(to: at, turn:)
   end
 
   ##
@@ -78,11 +89,26 @@ class Unit < ApplicationRecord
   # @param [Territory] to
   # @param [Turn] turn
   # @return [Boolean]
-  #
+  # rubocop:disable Lint/UnusedMethodArgument
   def can_convoy?(from:, to:, turn:)
     # TODO: This will require being able to trace a path between two territories, and checking that the path is
     #   entirely occupied by fleets
     true
+  end
+  # rubocop:enable Lint/UnusedMethodArgument
+
+  ##
+  # @return [Boolean]
+  #
+  def active?
+    status == STATUS_ACTIVE
+  end
+
+  ##
+  # @return [Boolean]
+  #
+  def disbanded?
+    status == STATUS_DISBANDED
   end
 
   ##

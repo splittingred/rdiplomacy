@@ -16,9 +16,17 @@ gem 'mysql2', '~> 0.5'
 gem 'puma', '~> 5.0' # Use the Puma web server [https://github.com/puma/puma]
 gem 'redis', '~> 4.0' # Use Redis adapter to run Action Cable in production
 
+# user auth
+gem 'devise'
+gem 'dotenv-rails'
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-rails_csrf_protection'
+
 gem 'dry-monads'
 gem 'dry-rails', '~> 0.7'
 gem 'dry-struct'
+gem 'rgl'
 
 # svg parsing
 gem 'inline_svg', '~> 1.9'
@@ -39,7 +47,6 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri mingw x64_mingw]
-  gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'ffaker'
   gem 'pry'
@@ -47,6 +54,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 6.0'
   gem 'rubocop', '>= 1.7'
   gem 'rubocop-performance', '>= 0.0.1'
+  gem 'rubocop-rails'
   gem 'rubocop-rspec', '>= 2.0'
   gem 'simplecov', require: false
 end

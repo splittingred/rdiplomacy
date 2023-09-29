@@ -1,5 +1,7 @@
 ---
 name: "Classic"
+abbr: "classic"
+description: "Classic Diplomacy map"
 unit_types:
   army:
     height: 50

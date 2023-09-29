@@ -11,6 +11,10 @@ module Games
       # TODO: Allow passing an existing game as opposed to exclusive
       #
       class Command < ::RDiplomacy::Command
+        include Rdiplomacy::Deps[
+          logger: 'logger'
+        ]
+
         ##
         # @param [Games::Commands::Setup::Request] request
         # @return [Success<Game>]
@@ -39,6 +43,7 @@ module Games
         rescue ActiveRecord::RecordNotFound => _e
           Failure(Error.new(code: :variant_not_found, message: "Variant #{variant_abbr} not found"))
         rescue StandardError => e
+          logger.error "Failed to find variant: #{e.message}"
           Failure(Error.from_exception(e))
         end
 
@@ -51,8 +56,15 @@ module Games
         def create_game(variant:, request:)
           q = ::Game.for_variant(variant)
           q.with_name(request.name) if request.exclusive
-          game = q.first_or_create!
+          game = q.first_or_initialize
+          game.name = request.name
+          game.variant = variant
+          game.map_abbr = request.map_abbr
+          game.save!
           Success(game)
+        rescue StandardError => e
+          logger.error "Failed to create game: #{e.message}"
+          Failure(Error.from_exception(e))
         end
 
         def setup_territories(variant:)
@@ -89,7 +101,7 @@ module Games
               territories[coast_full_abbr.to_sym] = coast
             end
           rescue StandardError => e
-            Rails.logger.error "Failed to load territory #{territory_abbr}: #{e.message}"
+            logger.error "Failed to load territory #{territory_abbr}: #{e.message}"
           end
           Success(territories)
         end
@@ -110,6 +122,8 @@ module Games
             country.current_player_id = 1 if country.current_player_id.nil? # will be updated later
             country.save!
             countries[country.abbr.to_sym] = country
+          rescue StandardError => e
+            logger.error "Failed to load country #{country_abbr}: #{e.message}"
           end
           Success(countries)
         end
@@ -152,11 +166,11 @@ module Games
               # @type [Territory] territory
               territory = territories[unit_config.territory_full_abbr.to_sym]
               unless territory
-                Rails.logger.error "FAILED TO FIND TERRITORY: #{unit.territory}}"
+                logger.error "FAILED TO FIND TERRITORY: #{unit.territory}}"
                 next
               end
 
-              up = ::UnitPosition.on_turn(turn).for_territory(territory).first_or_initialize
+              up = ::UnitPosition.on_turn(turn).at(territory).first_or_initialize
               unless up.persisted? && up.unit
                 unit = ::Unit.for_game(game).for_country(country).joins(:unit_positions).where(unit_positions: { territory: }).first_or_initialize.tap do |u|
                   u.unit_type = unit_config.type

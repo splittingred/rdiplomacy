@@ -3,22 +3,57 @@
 module Maps
   class Configuration
     class Border < ::Entities::Base
+      TYPE_LAND = 'land'
+      TYPE_SEA = 'sea'
+      TYPE_COAST = 'coast'
+
       # @!attribute [r] type
       #   @return [String]
-      attribute(:type, ::Types::Coercible::String.default('land'))
+      attribute(:type, ::Types::Coercible::String.default(TYPE_LAND))
       # @!attribute [r] abbr
       #   @return [String]
       attribute(:abbr, ::Types::Coercible::String)
 
+      ##
+      # @return [Boolean]
+      #
+      def convoyable_to?
+        type == TYPE_SEA || type == TYPE_COAST
+      end
+
+      ##
+      # @return [Boolean]
+      #
       def land_passable?
-        type.to_s == 'land' || type.to_s == 'coast'
+        type == TYPE_LAND || type == TYPE_COAST
       end
 
       ##
       # @return [Boolean]
       #
       def sea_passable?
-        type.to_s == 'sea' || type.to_s == 'coast'
+        type == TYPE_SEA || type == TYPE_COAST
+      end
+
+      ##
+      # @return [Boolean]
+      #
+      def sea?
+        type == TYPE_SEA
+      end
+
+      ##
+      # @return [Boolean]
+      #
+      def inland?
+        type == TYPE_LAND
+      end
+
+      ##
+      # @return [Boolean]
+      #
+      def coast?
+        type == TYPE_COAST
       end
     end
 
@@ -190,6 +225,15 @@ module Maps
       end
     end
 
+    # @!attribute [r] name
+    #  @return [String]
+    attr_reader :name
+    # @!attribute [r] abbr
+    #  @return [String]
+    attr_reader :abbr
+    # @!attribute [r] description
+    #  @return [String]
+    attr_reader :description
     # @!attribute [r] territories
     #   @return [Hash<Symbol,Territory>]
     attr_reader :territories
@@ -198,11 +242,14 @@ module Maps
     attr_reader :unit_types
 
     ##
-    # @param [String] variant_name
+    # @param [String] variant_abbr
     # @return [self]
     #
-    def initialize(variant_name = 'classic')
-      @yml = YAML.safe_load_file(Rails.root + "app/configuration/maps/#{variant_name}.yml")
+    def initialize(variant_abbr = 'classic')
+      @yml = YAML.safe_load_file(Rails.root + "app/configuration/maps/#{variant_abbr}.yml")
+      @name = @yml.fetch('name')
+      @abbr = @yml.fetch('abbr', variant_abbr)
+      @description = @yml.fetch('description', '')
       @territories = {}
       @unit_types = {
         army: UnitType.new(UnitType::TYPE_ARMY, @yml['unit_types']['army']),

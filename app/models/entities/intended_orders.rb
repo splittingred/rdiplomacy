@@ -70,7 +70,10 @@ module Entities
     # @return [Integer]
     #
     def supporting_hold_strength(at)
-      @support_holds[at.abbr]&.reject { |o| support_cut?(at: o.assistance_territory, country: o.country) }&.size.to_i
+      @support_holds[at.abbr]&.reject do |o|
+        support_cut?(at: o.assistance_territory, country: o.country) || # if support is cut
+          !o.from_territory.can_be_occupied_by?(o.unit) # or the supporting unit cannot actually move to supported territory
+      end&.size.to_i
     end
 
     ##
@@ -78,36 +81,37 @@ module Entities
     # @param [Territory] to
     # @return [IntendedOrder]
     #
-    def successful_move_order_to(to)
-      winning_orders = moves_to(to).max_by_all do |o|
-        move_strength_to(to: o.to_territory, country: o.country)
-      end
-      winning_orders.size > 1 ? nil : winning_orders.first
+    def winning_move_order_to(to)
+      winning_orders = moves_to(to).max_by_all { |o| move_strength_to(from: o.from_territory, to: o.to_territory) }
+      winning_orders.size == 1 ? winning_orders.first : nil
     end
 
     ##
     # Determine the move strength to a given territory
     #
+    # @param [Territory] from
     # @param [Territory] to
-    # @param [Country] country The country calculating move strength for
     # @return [Integer]
     #
-    def move_strength_to(to:, country:)
-      move_support_strength_to(to:, country:) + SELF_STRENGTH
+    def move_strength_to(from:, to:)
+      move_support_strength_to(from:, to:) + SELF_STRENGTH
     end
 
     ##
     # Determine the support strength of a move to a given territory. If the order of support to that territory is
     # cut by something moving against it, subtract that from the total.
     #
+    # @param [Territory|String] from
     # @param [Territory|String] to
-    # @param [Country|String] country The country calculating move support for
     # @return [Integer]
-    def move_support_strength_to(to:, country:)
+    def move_support_strength_to(from:, to:)
       to = to.abbr if to.is_a?(Territory)
-      country = country.abbr if country.is_a?(Country)
-      @support_moves[to]&.reject do |o|
-        o.country.abbr != country || support_cut?(at: o.assistance_territory, country:)
+      from = from.abbr if from.is_a?(Territory)
+
+      @support_moves[to]&.reject do |supporting_order|
+        supporting_order.from_territory.abbr != from || # the support is for the wrong unit
+          support_cut?(at: supporting_order.assistance_territory, country: supporting_order.country) || # or the support is cut
+          !supporting_order.to_territory.can_be_occupied_by?(supporting_order.unit) # or the supporting unit cannot actually move to supported territory
       end&.size.to_i || 0
     end
 
@@ -135,6 +139,39 @@ module Entities
       at = at.abbr if at.is_a?(Territory)
       country = country.abbr if country.is_a?(Country)
       @moves[at]&.any? { |o| o.country.abbr != country } || false
+    end
+
+    ##
+    # Return all convoys for a given territory
+    #
+    # @param [Territory|String] territory
+    # @return [Array<IntendedOrder>]
+    #
+    def convoys_for(territory)
+      territory_abbr = territory.is_a?(Territory) ? territory.abbr : territory
+      @convoys[territory_abbr] || []
+    end
+
+    ##
+    # Determine a valid convoy path for orders. Note that this _must_ be evaluated after _all_ orders are evaluated
+    # to ensure that validity checks and dislodges of fleets are calculated prior to finding the convoy path.
+    #
+    # @return [Array<IntendedOrder>]
+    #
+    def convoy_path_for(from:, to:)
+      convoys = convoys_for(from)
+
+      # remove all convoys:
+      # * not convoying to the same target
+      # * that have failed
+      # * have dislodged units
+      convoys.reject! do |o|
+        o.to_territory.abbr != to.abbr || o.failed? || o.unit_dislodged?
+      end
+
+      # TODO: get true path from this list of valid convoys. Ensure the path is a connected line.
+
+      convoys
     end
 
     private

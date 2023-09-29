@@ -5,12 +5,12 @@ module Games
     include ::Dry::Monads[:result]
 
     ##
-    # @param [Games::Game] game
     # @param [Games::Turn] turn
     # @return [Success<Entities::OrderRegister>]
     # @return [Failure<Error>]
     #
-    def find_register(game:, turn:)
+    def find_register(turn:)
+      game = turn.game
       register = ::Entities::OrderRegister.new(
         game_id: game.id,
         variant_id: game.variant_id
@@ -24,8 +24,8 @@ module Games
           country_abbr: order.country_abbr.to_s,
           country_name: order.country_name.to_s,
           unit_territory_abbr: order.unit_territory_abbr.to_s,
-          unit_type: order.unit_type || 'army',
-          move_type: order.move_type || 'HOLD',
+          unit_type: order.unit_type || Unit::TYPE_ARMY,
+          move_type: order.move_type || Order::TYPE_HOLD,
           from_territory_abbr: order.from_territory_abbr || '',
           to_territory_abbr: order.to_territory_abbr || '',
           assisting_territory_abbr: order.assistance_territory_abbr || '',
@@ -40,6 +40,8 @@ module Games
       register.countries = country_orders
       Success(register)
     end
+
+    private
 
     # TODO: Does this need to handle orders that are not yet submitted?
     def build_find_query(game:, turn:)

@@ -41,5 +41,33 @@ class Move < ApplicationRecord
   scope :for_country, ->(country) { where(country:) }
   scope :for_order, ->(order) { where(order:) }
   scope :on_turn, ->(turn) { where(turn:) }
-  scope :for_territory, ->(territory) { where(from_territory: territory) }
+  scope :at, ->(territory) { where(from_territory: territory) }
+
+  ##
+  # @return [Boolean]
+  #
+  def build?
+    move_type.to_s.downcase == Order::TYPE_BUILD
+  end
+
+  ##
+  # @return [Boolean]
+  #
+  def disband?
+    move_type.to_s.downcase == Order::TYPE_DISBAND
+  end
+
+  ##
+  # @return [Boolean]
+  #
+  def move?
+    move_type.to_s.downcase == Order::TYPE_MOVE
+  end
+
+  ##
+  # @return [Boolean]
+  #
+  def retreat?
+    move_type.to_s.downcase == Order::TYPE_RETREAT
+  end
 end

@@ -16,7 +16,6 @@ class UnitPosition < ApplicationRecord
 
   scope :on_turn, ->(turn) { where(turn:) }
   scope :for_unit, ->(unit) { where(unit:) }
-  scope :for_territory, ->(territory) { where(territory:) }
   scope :at, ->(territory) { where(territory:) }
   scope :dislodged, -> { where(dislodged: true) }
   scope :not_dislodged, -> { where(dislodged: false) }

@@ -11,6 +11,23 @@ move_types:
   hold:
     width: 75
     height: 75
+seasons:
+  SPRING:
+    name: "Spring"
+    previous: WINTER
+    next: FALL
+    start_of_year: true
+  FALL:
+    name: "Fall"
+    previous: SPRING
+    next: WINTER
+  WINTER:
+    name: "Winter"
+    previous: FALL
+    next: SPRING
+    reconcile_units: true
+    moves_allowed: false
+    end_of_year: true
 countries:
   - name: "Austria"
     abbr: "aus"

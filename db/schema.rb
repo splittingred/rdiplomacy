@@ -10,17 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_24_184058) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_09_183607) do
   create_table "borders", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "variant_id", null: false
-    t.integer "from_territory_id", null: false
-    t.integer "to_territory_id", null: false
+    t.string "from_territory_abbr", null: false
+    t.string "to_territory_abbr", null: false
     t.boolean "sea_passable", default: false, null: false
     t.boolean "land_passable", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["from_territory_id"], name: "index_borders_on_from_territory_id"
-    t.index ["to_territory_id"], name: "index_borders_on_to_territory_id"
+    t.index ["from_territory_abbr"], name: "index_borders_on_from_territory_abbr"
+    t.index ["to_territory_abbr"], name: "index_borders_on_to_territory_abbr"
     t.index ["variant_id"], name: "index_borders_on_variant_id"
   end
 
@@ -40,6 +40,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_24_184058) do
   create_table "games", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.bigint "variant_id", null: false
+    t.string "map_abbr"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["variant_id"], name: "index_games_on_variant_id"
@@ -151,17 +152,42 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_24_184058) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "unit_type", null: false
+    t.string "status", default: "active", null: false
     t.index ["country_id"], name: "index_units_on_country_id"
     t.index ["game_id"], name: "index_units_on_game_id"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "username"
+    t.string "provider"
+    t.string "uid"
     t.string "email"
+    t.string "full_name"
+    t.string "avatar_url"
     t.datetime "joined_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
+    t.string "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string "unconfirmed_email"
+    t.integer "failed_attempts", default: 0, null: false
+    t.string "unlock_token"
+    t.datetime "locked_at"
+    t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 

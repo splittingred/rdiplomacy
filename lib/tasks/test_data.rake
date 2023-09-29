@@ -1,26 +1,51 @@
 # frozen_string_literal: true
 
 namespace :test_data do
-  desc 'Seed a standard classic game'
-  task classic_1: :environment do
+  desc 'Clear all test data'
+  task clear: :environment do
     Rails.logger = ::Logger.new($stdout)
     Rails.logger.level = :info
 
+    Game.destroy_all
+  end
+
+  desc 'Seed a game'
+  task :import, %i[variant_abbr map_abbr import_variant] => :environment do |_t, args|
+    args.with_defaults(
+      variant_abbr: 'classic',
+      map_abbr: 'classic',
+      import_variant: false
+    )
+    Rails.logger = ::Logger.new($stdout)
+    Rails.logger.level = :info
+
+    variant_abbr = args.variant_abbr
+    map_abbr = args.map_abbr
+
+    game_file = Rails.root.join('lib', 'test_cases', variant_abbr, '1.yml')
+    raise "Invalid game file: #{game_file}" unless File.exist?(game_file)
+
+    Rails.logger.info "Loading game YML at #{game_file}"
+    game_yml = YAML.safe_load_file(game_file)
+    raise "Invalid game YML: #{game_file}" unless game_yml.is_a?(Hash)
+
+    # Import variant
     # @type [Games::Service] games_service
     games_service = ::Rdiplomacy::Container['games.service']
     variants_service = ::Rdiplomacy::Container['variants.service']
-    variant = variants_service.import!(name: 'classic').value_or do |err|
-      raise "Failed to import classic variant: #{err.message}"
+    if args.import_variant
+      variant = variants_service.import!(abbr: variant_abbr).value_or do |err|
+        raise "Failed to import #{variant_abbr} variant: #{err.message}"
+      end
+    else
+      variant = Variant.by_abbr(variant_abbr).first!
     end
 
     # create game record
-    game_file = Rails.root.join('lib', 'test_cases', variant_name, '1.yml')
-    Rails.logger.info "Loading game at #{game_file}"
-    game_yml = YAML.safe_load_file(game_file)
-
     req = ::Games::Commands::Setup::Request.new(
-      name: game_yml['name'],
-      variant_abbr: variant.abbr,
+      name: game_yml.fetch('name'),
+      variant_abbr:,
+      map_abbr:,
       exclusive: true
     )
     # @type [Game] game
@@ -30,8 +55,8 @@ namespace :test_data do
     end
 
     # load all countries + territories in memory for easier, non-repetitive loaded access
-    countries = ::Country.for_game(game).each_with_object({}) { |c, h| h[c.abbr.to_sym] = c }
-    territories = ::Territory.for_variant(variant).each_with_object({}) { |t, h| h[t.abbr.to_sym] = t }
+    countries = ::Country.for_game(game).index_by { |c| c.abbr.to_sym }
+    territories = ::Territory.for_variant(variant).index_by { |t| t.abbr.to_sym }
 
     # create users + players + countries
     game_yml['players'].each do |country_abbr, username|
@@ -51,18 +76,18 @@ namespace :test_data do
       country.save!
     end
 
-    two_years_ago = Time.current - 2.years
-    turn_length = variant_yml.fetch('turn_length', 86_400).to_i
+    two_years_ago = 2.years.ago
+    turn_length = variant.configuration.opts.turn_length
 
     # create turns + moves + orders
     game_yml['turns'].each_with_index do |turn_yml, idx|
       this_turn = ::Turn.for_game(game).by_year(turn_yml['year']).by_season(turn_yml['season']).first_or_initialize
-      adjucated = turn_yml.fetch('adjucated', 'false').to_s != 'false'
+      adjudicated = turn_yml.fetch('adjudicated', 'false').to_s != 'false'
       turn_additive = two_years_ago + idx + 10 # add 10 seconds to each turn to make sure they're not all at the same time
 
       this_turn.started_at = turn_additive
       this_turn.deadline_at = turn_additive + turn_length
-      if adjucated
+      if adjudicated
         this_turn.current = false
         this_turn.adjucated_at = turn_additive + turn_length
         this_turn.finished_at = turn_additive + turn_length + 5
@@ -79,9 +104,9 @@ namespace :test_data do
         end
 
         orders_yml.each do |order_yml|
-          from_territory_abbr = order_yml['territory'].to_s.downcase
+          from_territory_abbr = order_yml['from_territory'].to_s.downcase
           from_territory = territories[from_territory_abbr.to_sym]
-          to_territory_abbr = order_yml['destination'].to_s.present? ? order_yml['destination'].to_s.downcase : from_territory_abbr
+          to_territory_abbr = order_yml['to_territory'].to_s.present? ? order_yml['to_territory'].to_s.downcase : from_territory_abbr
           to_territory = territories[to_territory_abbr.to_sym]
 
           up = ::UnitPosition.on_turn(this_turn).at(from_territory).joins(:unit).where(unit: { country_id: order_country.id }).not_dislodged.first
@@ -90,7 +115,7 @@ namespace :test_data do
             next
           end
 
-          order = ::Order.for_game(game).on_turn(this_turn).for_country(order_country).for_territory(from_territory).first_or_initialize
+          order = ::Order.for_game(game).on_turn(this_turn).for_country(order_country).at(from_territory).first_or_initialize
           order.player = order_country.current_player
           order.unit_position = up
           order.from_territory = from_territory
@@ -99,16 +124,7 @@ namespace :test_data do
           order.convoyed = order_yml.fetch('convoyed', false).to_s == 'true'
           order.save!
 
-          ## TODO: Make this adjudicate rather than specifically writing the moves
-          move = ::Move.for_game(game).on_turn(this_turn).for_country(order_country).for_territory(from_territory).first_or_initialize
-          move.player = order_country.current_player
-          move.order = order
-          move.unit_position = up
-          move.from_territory = from_territory
-          move.to_territory = to_territory
-          move.move_type = order_yml['type'].to_s.downcase
-          move.convoyed = order_yml.fetch('convoyed', false).to_s == 'true'
-          move.save!
+          games_service.adjudicate_turn!(game:, turn: this_turn) if adjudicated
         end
       end
     end

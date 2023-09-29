@@ -1,0 +1,22 @@
+<div class="table-responsive">
+<table class="table table-sm">
+  <thead>
+  <tr>
+    <th scope="col">Name</th>
+    <th scope="col">Variant</th>
+    <th scope="col">Map</th>
+    <th scope="col">Players</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @games.each do |game| %>
+  <tr>
+    <th scope="row"><%= link_to game.name, game_path(game) %></th>
+    <td><%= game.variant.name %></td>
+    <td><%= game.map.name %></td>
+    <td></td>
+  </tr>
+  <% end %>
+  </tbody>
+</table>
+</div>

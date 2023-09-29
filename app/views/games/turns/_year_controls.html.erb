@@ -1,0 +1,29 @@
+<div class="btn-group btn-group-sm" id="game-history-controls" role="group" aria-label="Game History Controls">
+  <!-- PRIOR TURN -->
+  <% if turn.first_turn? %>
+    <%= link_to '#', class: 'btn btn-secondary btn-history disabled', id: 'history_previous_season' do %>
+      <i class="fas fa-arrow-left"></i>
+    <% end %>
+  <% else %>
+    <%= link_to game_turn_path(game, turn.previous_turn_abbr), class: 'btn btn-secondary btn-history', id: 'history_previous_season' do %>
+      <i class="fas fa-arrow-left"></i>
+    <% end %>
+  <% end %>
+
+  <!-- CURRENT TURN -->
+  <%= link_to game_turn_path(game, turn.abbr), class: 'btn btn-secondary btn-history', id: 'history_current_season' do %>
+    <%= turn.name %>
+    <i class="fas fa-arrow-down"></i>
+  <% end %>
+
+  <!-- NEXT TURN -->
+  <% if turn.current? %>
+    <%= link_to '#', class: 'btn btn-secondary btn-history disabled', id: 'history_next_season' do %>
+      <i class="fas fa-arrow-right"></i>
+    <% end %>
+  <% else %>
+    <%= link_to game_turn_path(game, turn.next_turn_abbr), class: 'btn btn-secondary btn-history', id: 'history_next_season' do %>
+      <i class="fas fa-arrow-right"></i>
+    <% end %>
+  <% end %>
+</div>

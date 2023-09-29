@@ -6,14 +6,19 @@ Rails.application.routes.draw do
 
   root 'games#index'
 
-  resources :games, only: [:index, :show] do
-    scope module: :games do
-      resources :maps, class: 'Games::MapsController', only: [:index, :show] do
-        get 'initial'
-      end
-    end
+  devise_for :users, controllers: {
+    sessions: 'users/sessions',
+    omniauth_callbacks: 'users/omniauth_callbacks',
+    confirmations: 'users/confirmations',
+    passwords: 'users/passwords',
+    registrations: 'users/registrations',
+    unlocks: 'users/unlocks'
+  }
+  devise_scope :user do
+    delete '/users/sign_out' => 'devise/sessions#destroy'
   end
 
-  namespace :games do
+  resources :games, only: [:index, :show] do
+    resources :turns, only: [:index, :show], controller: 'games/turns'
   end
 end

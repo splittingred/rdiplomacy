@@ -12,12 +12,12 @@ module Variants
     ]
 
     ##
-    # @param [String] name
+    # @param [String] abbr
     # @return [Success<Variant>]
     # @return [Failure<Error>]
     #
-    def import!(name:)
-      request = ::Variants::Commands::Import::Request.new(name:)
+    def import!(abbr:)
+      request = ::Variants::Commands::Import::Request.new(abbr:)
       import_cmd.call(request)
     end
   end

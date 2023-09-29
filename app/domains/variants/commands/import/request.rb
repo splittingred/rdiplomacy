@@ -4,9 +4,9 @@ module Variants
   module Commands
     module Import
       class Request < ::RDiplomacy::Request
-        # @!attribute [r] name
+        # @!attribute [r] abbr
         #   @return [String]
-        attribute(:name, ::Types::Coercible::String.default('classic'))
+        attribute(:abbr, ::Types::Coercible::String.default('classic'))
       end
     end
   end

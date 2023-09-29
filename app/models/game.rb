@@ -3,6 +3,14 @@
 ##
 # Base game model
 #
+# @!attribute id
+#   @return [Integer]
+# @!attribute variant_id
+#   @return [Integer]
+# @!attribute name
+#   @return [String]
+# @!attribute map_abbr
+#   @return [String]
 class Game < ApplicationRecord
   # @!attribute variant
   #   @return [Variant]
@@ -31,10 +39,24 @@ class Game < ApplicationRecord
   scope :with_name, ->(name) { where(name:) }
 
   ##
-  # @return [Maps::Map]
+  # @return [Variants::Configuration] the configuration for the variant of the game.
   #
-  def map
-    variant.map
+  def variant_configuration
+    variant.configuration
+  end
+
+  ##
+  # @return [Integer]
+  #
+  def start_year
+    variant.configuration.opts.start_year
+  end
+
+  ##
+  # @return [String]
+  #
+  def start_season
+    variant.configuration.opts.start_season
   end
 
   ##
@@ -45,5 +67,12 @@ class Game < ApplicationRecord
   #
   def current_turn
     turns.current.first
+  end
+
+  ##
+  # @return [Map] the map for this variant.
+  #
+  def map
+    @map ||= ::Maps::Map.new(map_abbr)
   end
 end

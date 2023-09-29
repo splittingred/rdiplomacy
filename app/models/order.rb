@@ -36,7 +36,7 @@ class Order < ApplicationRecord
   scope :for_player, ->(player) { where(player:) }
   scope :for_country, ->(country) { where(country:) }
   scope :on_turn, ->(turn) { where(turn:) }
-  scope :for_territory, ->(territory) { where(from_territory: territory) }
+  scope :at, ->(territory) { where(from_territory: territory) }
 
   delegate :unit_type, to: :unit_position
 
@@ -78,7 +78,7 @@ class Order < ApplicationRecord
   # @return [IntendedOrder]
   #
   def to_intended
-    IntendedOrder.new(
+    intended_order_class.new(
       order: self,
       game:,
       turn:,
@@ -91,5 +91,15 @@ class Order < ApplicationRecord
       to_territory:,
       assistance_territory:
     )
+  end
+
+  ##
+  # @return [IntendedOrder]
+  #
+  def intended_order_class
+    ::IntendedOrders.const_get(move_type.to_s.classify)
+  rescue NameError => _e
+    Container['logger'].error "Order #{self.id} is an invalid move type: #{move_type}"
+    ::IntendedOrders::Hold
   end
 end

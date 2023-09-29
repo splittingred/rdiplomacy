@@ -16,6 +16,7 @@ module Variants
         config.opts = build_opts(yml.fetch('options', yml.fetch('opts', {})))
         config.move_types = build_move_types(yml.fetch('move_types', {}))
         config.countries = build_countries(yml.fetch('countries', []))
+        config.seasons = build_seasons(yml.fetch('seasons', {}))
       end
     end
 
@@ -91,6 +92,25 @@ module Variants
           starting_unit.type = unit.fetch('type', 'army')
           starting_unit.territory = unit.fetch('territory', '')
           starting_unit.coast = unit.fetch('coast', 'false').to_s == 'true'
+        end
+      end
+    end
+
+    ##
+    # @param [Hash] seasons
+    # @return [Hash<String,Games::VariantConfiguration::Season>]
+    #
+    def build_seasons(seasons)
+      seasons.each_with_object({}) do |(abbr, so), hash|
+        hash[abbr.to_sym] = Variants::Configuration::Season.new.tap do |season|
+          season.abbr = abbr
+          season.name = so.fetch('name', '')
+          season.previous = so.fetch('previous', 'WINTER')
+          season.next = so.fetch('next', 'SPRING')
+          season.reconcile_units = so.fetch('reconcile_units', false) == true
+          season.moves_allowed = so.fetch('moves_allowed', true) == true
+          season.start_of_year = so.fetch('start_of_year', false) == true
+          season.end_of_year = so.fetch('end_of_year', false) == true
         end
       end
     end

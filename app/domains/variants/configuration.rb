@@ -96,6 +96,41 @@ module Variants
       attribute(:turn_length, ::Types::Coercible::Integer.default(86_400))
     end
 
+    class Season < ::Entities::Base
+      # @!attribute name
+      #   @return [String]
+      attribute(:name, ::Types::Coercible::String.default(''))
+      # @!attribute abbr
+      #   @return [String]
+      attribute(:abbr, ::Types::Coercible::String.default(''))
+      # @!attribute previous
+      #   @return [String]
+      attribute(:previous, ::Types::Coercible::String.default(''))
+      # @!attribute next
+      #   @return [String]
+      attribute(:next, ::Types::Coercible::String.default(''))
+      # @!attribute moves_allowed
+      #   @return [Boolean]
+      attribute(:moves_allowed, ::Types::Bool.default(true))
+      # @!attribute reconcile_units
+      #   @return [Boolean]
+      attribute(:reconcile_units, ::Types::Bool.default(false))
+      # @!attribute end_of_year
+      #   @return [Boolean]
+      attribute(:end_of_year, ::Types::Bool.default(false))
+      # @!attribute start_of_year
+      #   @return [Boolean]
+      attribute(:start_of_year, ::Types::Bool.default(false))
+
+      def end_of_year?
+        end_of_year == true
+      end
+
+      def start_of_year?
+        start_of_year == true
+      end
+    end
+
     # @!attribute name
     #   @return [String]
     attribute(:name, ::Types::Coercible::String.default(''))
@@ -114,5 +149,8 @@ module Variants
     # @!attribute move_types
     #   @return [Hash<Symbol,MoveType>]
     attribute(:move_types, ::Types::Hash.default { {} })
+    # @!attribute seasons
+    #   @return [Hash<Symbol,Season>]
+    attribute(:seasons, ::Types::Hash.default { {} })
   end
 end

@@ -4,6 +4,8 @@
   prepare do
     require 'json'
     require 'logger'
+    require 'rgl/adjacency'
+    require 'rgl/path'
   end
 
   start do

@@ -2,11 +2,7 @@
 <div class="row">
   <div class="col-6">
     <div id="map-season">
-      <div class="btn-group btn-group-sm" id="game-history-controls" role="group" aria-label="Game History Controls">
-        <a class="btn btn-secondary btn-history disabled" id="history_previous_season" href="#"><i class="fas fa-arrow-left"></i></a>
-        <a class="btn btn-secondary btn-history" id="history_current_season" href="#" data-bs-toggle="modal"><%= @view.turn.season %> <%= @view.turn.year %> <i class="fas fa-arrow-down"></i></a>
-        <a class="btn btn-secondary btn-history disabled" id="history_next_season" href="#"><i class="fas fa-arrow-right"></i></a>
-      </div>
+      <%= render partial: 'year_controls', locals: { turn: @view.turn, game: @view.game } %>
     </div>
     <div class="map" id="map-container">
       <%= @view.map %>

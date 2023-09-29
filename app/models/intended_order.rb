@@ -5,11 +5,9 @@
 # adjudication step to determine if the order is valid or not.
 #
 class IntendedOrder < ::Entities::Base
-  STATUS_PENDING = 'pending'
-  STATUS_SUCCESS = 'success'
-  STATUS_FAILURE = 'failure'
-
   include Errorable
+  include MoveTypeable
+  include Validatable
 
   # @!attribute [r] order
   #  @return [Order]
@@ -45,51 +43,15 @@ class IntendedOrder < ::Entities::Base
   #   @return [Territory]
   #   @return [NilClass] if no assisting territory in the order
   attribute(:assistance_territory, Types.Instance(::Object).optional)
-  # @!attribute valid
-  #  @return [Boolean]
-  attribute(:valid, Types::Bool.default(true))
-  # @!attribute status
-  #  @return [String]
-  attribute(:status, Types::Strict::String.default(STATUS_PENDING).enum(STATUS_PENDING, STATUS_SUCCESS, STATUS_FAILURE))
-
-  ##
-  # @return [String]
-  #
-  def to_s(country_prefix: false)
-    country_prefix = country_prefix ? "#{country.to_s.upcase} " : ''
-    case move_type.to_s.downcase
-    when Order::TYPE_HOLD # A Sev H
-      "#{country_prefix}#{unit} #{from_territory} H"
-    when Order::TYPE_MOVE, Order::TYPE_RETREAT # A Kie - Mun
-      "#{country_prefix}#{unit} #{from_territory} - #{to_territory}"
-    when Order::TYPE_SUPPORT_HOLD # F Ion S Nap H
-      supported_country_prefix = '' # TODO: Add country prefix for multi-country supports
-      "#{country_prefix}#{unit} #{assistance_territory} S #{supported_country_prefix}#{from_territory} H"
-    when Order::TYPE_SUPPORT_MOVE # F Aeg S Ion - Eas
-      supported_country_prefix = '' # TODO: Add country prefix for multi-country supports
-      "#{country_prefix}#{unit} #{assistance_territory} S #{supported_country_prefix}#{from_territory} - #{to_territory}"
-    when Order::TYPE_CONVOY # F Ion C Nap - Tun
-      convoyed_country_prefix = '' # TODO: Add country prefix for multi-country convoys
-      "#{country_prefix}#{unit} #{assistance_territory} C #{convoyed_country_prefix}#{from_territory} - #{to_territory}"
-    when Order::TYPE_BUILD, Order::TYPE_DISBAND # F Ven
-      "#{country_prefix}#{unit} #{from_territory}"
-    else
-      ''
-    end
-  end
+  # @!attribute convoyed
+  #   @return [Boolean] whether or not this order was convoyed
+  attribute(:convoyed, Types::Bool.default(false))
 
   ##
   # @return [Boolean]
   #
   def unit_dislodged?
     unit_position.dislodged?
-  end
-
-  ##
-  # @return [Boolean]
-  #
-  def valid_move?
-    from_territory.adjacent_to?(to_territory) && to_territory.can_be_occupied_by?(unit)
   end
 
   ##
@@ -102,71 +64,15 @@ class IntendedOrder < ::Entities::Base
   ##
   # @return [Boolean]
   #
-  def hold?
-    move_type == Order::TYPE_HOLD
-  end
-
-  def invalidate!(code:, message:)
-    self.valid = false
-    errors.add(code, message)
-  end
-
-  def validate!
-    self.valid = true
+  def convoy?
+    move_type == Order::TYPE_CONVOY
   end
 
   ##
   # @return [Boolean]
   #
-  def valid?
-    valid == true
-  end
-
-  ##
-  # @return [Boolean]
-  #
-  def invalid?
-    !valid?
-  end
-
-  ##
-  # @return [Boolean]
-  #
-  def pending?
-    status == STATUS_PENDING
-  end
-
-  ##
-  # @return [Boolean]
-  #
-  def successful?
-    status == STATUS_SUCCESS
-  end
-
-  ##
-  # @return [Boolean]
-  #
-  def failed?
-    status == STATUS_FAILURE
-  end
-
-  ##
-  # Succeed the move
-  #
-  def succeed!
-    self.status = STATUS_SUCCESS
-  end
-
-  ##
-  # Fail the move
-  #
-  # @param [Symbol] attr
-  # @param [Symbol] code
-  # @param [String] message
-  #
-  def fail!(attr, code, message = '')
-    self.status = IntendedOrder::STATUS_FAILURE
-    errors.add(attr, code, message:)
+  def retreat?
+    move_type == Order::TYPE_RETREAT
   end
 
   ##

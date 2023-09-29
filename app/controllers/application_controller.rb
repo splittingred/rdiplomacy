@@ -7,4 +7,8 @@ class ApplicationController < ActionController::Base
     flash[:error] = 'Unknown error'
     redirect_to root_path
   end
+
+  def container
+    ::Rdiplomacy::Container
+  end
 end

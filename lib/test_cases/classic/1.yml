@@ -12,80 +12,81 @@ players:
 turns:
   - year: 1901
     season: SPRING
+    adjudicated: true
     orders:
       eng:
-        - territory: lvp
+        - from_territory: lvp
           type: MOVE
-          destination: edi
-        - territory: lon
+          to_territory: edi
+        - from_territory: lon
           type: MOVE
-          destination: nth
-        - territory: edi
+          to_territory: nth
+        - from_territory: edi
           type: MOVE
-          destination: nwg
+          to_territory: nwg
       fra:
-        - territory: bre
+        - from_territory: bre
           type: MOVE
-          destination: mao
-        - territory: par
+          to_territory: mao
+        - from_territory: par
           type: MOVE
-          destination: pic
-        - territory: mar
+          to_territory: pic
+        - from_territory: mar
           type: MOVE
-          destination: spa
+          to_territory: spa
       ger:
-        - territory: ber
+        - from_territory: ber
           type: MOVE
-          destination: kie
-        - territory: mun
+          to_territory: kie
+        - from_territory: mun
           type: MOVE
-          destination: ruh
-        - territory: kie
+          to_territory: ruh
+        - from_territory: kie
           type: MOVE
-          destination: den
+          to_territory: den
       rus:
-        - territory: stp
+        - from_territory: stp
           coast: sc
           type: MOVE
-          destination: bot
-        - territory: mos
+          to_territory: bot
+        - from_territory: mos
           type: MOVE
-          destination: ukr
-        - territory: war
+          to_territory: ukr
+        - from_territory: war
           type: MOVE
-          destination: gal
-        - territory: sev
+          to_territory: gal
+        - from_territory: sev
           type: MOVE
-          destination: bla
+          to_territory: bla
       ita:
-        - territory: rom
+        - from_territory: rom
           type: MOVE
-          destination: apu
-        - territory: ven
+          to_territory: apu
+        - from_territory: ven
           type: HOLD
-        - territory: nap
+        - from_territory: nap
           type: MOVE
-          destination: ion
+          to_territory: ion
       tur:
-        - territory: con
+        - from_territory: con
           type: MOVE
-          destination: bul
-        - territory: ank
+          to_territory: bul
+        - from_territory: ank
           type: MOVE
-          destination: bla
-        - territory: smy
+          to_territory: bla
+        - from_territory: smy
           type: MOVE
-          destination: con
+          to_territory: con
       aus:
-        - territory: vie
+        - from_territory: vie
           type: MOVE
-          destination: gal
-        - territory: bud
+          to_territory: gal
+        - from_territory: bud
           type: MOVE
-          destination: ser
-        - territory: tri
+          to_territory: ser
+        - from_territory: tri
           type: MOVE
-          destination: alb
+          to_territory: alb
   - year: 1901
     season: FALL
     adjucated: false

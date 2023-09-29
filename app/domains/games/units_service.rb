@@ -2,9 +2,9 @@
 
 module Games
   class UnitsService
-    def fetch(game:, turn:)
+    def for_turn(turn:)
       ::Unit
-        .for_game(game)
+        .for_game(turn.game)
         .joins(
           unit_positions: [:territory],
           country: []

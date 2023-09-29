@@ -156,7 +156,7 @@ module Games
                 next
               end
 
-              up = ::UnitPosition.on_turn(turn).for_territory(territory).first_or_initialize
+              up = ::UnitPosition.on_turn(turn).at(territory).first_or_initialize
               unless up.persisted? && up.unit
                 unit = ::Unit.for_game(game).for_country(country).joins(:unit_positions).where(unit_positions: { territory: }).first_or_initialize.tap do |u|
                   u.unit_type = unit_config.type

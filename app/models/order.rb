@@ -36,7 +36,7 @@ class Order < ApplicationRecord
   scope :for_player, ->(player) { where(player:) }
   scope :for_country, ->(country) { where(country:) }
   scope :on_turn, ->(turn) { where(turn:) }
-  scope :for_territory, ->(territory) { where(from_territory: territory) }
+  scope :at, ->(territory) { where(from_territory: territory) }
 
   delegate :unit_type, to: :unit_position
 

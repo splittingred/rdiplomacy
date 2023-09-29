@@ -23,6 +23,8 @@
       <div class="container-fluid" data-layout="container">
         <%= render 'shared/navbar' %>
         <div class="content">
+          <div class="notice"><%= notice %></div>
+          <div class="alert"><%= alert %></div>
           <%= yield %>
         </div>
       </div>

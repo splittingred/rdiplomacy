@@ -102,6 +102,34 @@ class IntendedOrder < ::Entities::Base
   ##
   # @return [Boolean]
   #
+  def retreat?
+    move_type == Order::TYPE_RETREAT
+  end
+
+  ##
+  # @return [Boolean]
+  #
+  def support_hold?
+    move_type == Order::TYPE_SUPPORT_HOLD
+  end
+
+  ##
+  # @return [Boolean]
+  #
+  def support_move?
+    move_type == Order::TYPE_SUPPORT_MOVE
+  end
+
+  ##
+  # @return [Boolean]
+  #
+  def convoy?
+    move_type == Order::TYPE_CONVOY
+  end
+
+  ##
+  # @return [Boolean]
+  #
   def hold?
     move_type == Order::TYPE_HOLD
   end

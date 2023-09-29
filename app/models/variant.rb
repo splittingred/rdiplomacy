@@ -6,10 +6,10 @@
 class Variant < ApplicationRecord
   # @!attribute games
   #   @return [ActiveRecord::Associations::CollectionProxy<Game>] the games that use this variant.
-  has_many :games
+  has_many :games, dependent: :destroy
   # @!attribute territories
   #   @return [ActiveRecord::Associations::CollectionProxy<Territory>] the territories that belong to this variant.
-  has_many :territories
+  has_many :territories, dependent: :destroy
 
   scope :by_abbr, ->(abbr) { where(abbr:) }
   scope :with_name, ->(name) { where(name:) }

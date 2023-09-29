@@ -2,27 +2,30 @@
 
 describe Entities::IntendedOrders, countries: :classic, territories: :classic do
   let(:ios) { described_class.new(orders) }
-
-  let(:orders) do
-    {
-      ven: build(:intended_order, :hold, from_territory: t_ven, country: country_ita), # F VEN H - unsupported hold
-      rom: build(:intended_order, :hold, from_territory: t_rom, country: country_ita), # F ROM H - supported hold by ROM
-      nap: build(:intended_order, :move, from_territory: t_nap, to_territory: t_ion, country: country_ita), # F NAP - ION
-      apu: build(:intended_order, :support_move, assistance_territory: t_apu, from_territory: t_nap, to_territory: t_ion, country: country_ita), # F APU S F NAP - ION
-      tus: build(:intended_order, :support_hold, assistance_territory: t_tus, from_territory: t_rom, country: country_ita), # F TUS S F ROM H
-      eas: build(:intended_order, :move, from_territory: t_eas, to_territory: t_ion, country: country_ita), # F EAS - ION
-      gre: build(:intended_order, :support_move, assistance_territory: t_gre, from_territory: t_eas, to_territory: t_ion, country: country_ita), # F GRE S F EAS - ION
-      aeg: build(:intended_order, :support_move, assistance_territory: t_aeg, from_territory: t_eas, to_territory: t_ion, country: country_ita) # F AEG S F EAS - ION
-    }
-  end
+  let(:game) { build :game }
+  let(:turn) { build :turn, game: }
+  let(:orders) { {} }
 
   describe '#successful_move_order_to' do
-    subject { ios.successful_move_order_to(t_ion) }
+    subject { ios.successful_move_order_to(destination) }
+
+    let(:destination) { t_ion }
+    let(:nap_u) { build(:unit, :fleet, game:, country: country_ita) }
+    let(:nap_up) { build(:unit_position, unit: nap_u, turn:, territory: t_nap) }
+    let(:apu_u) { build(:unit, :fleet, game:, country: country_ita) }
+    let(:apu_up) { build(:unit_position, unit: apu_u, turn:, territory: t_apu) }
+    let(:adr_u) { build(:unit, :fleet, game:, country: country_ita) }
+    let(:adr_up) { build(:unit_position, unit: adr_u, turn:, territory: t_adr) }
+
+    let(:tys_u) { build(:unit, :fleet, game:, country: country_fra) }
+    let(:tys_up) { build(:unit_position, unit: tys_u, turn:, territory: t_tys) }
+    let(:tun_u) { build(:unit, :fleet, game:, country: country_fra) }
+    let(:tun_up) { build(:unit_position, unit: tun_u, turn:, territory: t_tun) }
 
     context 'when there are no competing moves to the territory' do
       let(:orders) do
         {
-          nap: build(:intended_order, :move, from_territory: t_nap, to_territory: t_ion, country: country_ita) # F NAP - ION
+          nap: build(:intended_order, :move, unit: nap_u, unit_position: nap_up, from_territory: t_nap, to_territory: t_ion, country: country_ita) # F NAP - ION
         }
       end
 
@@ -34,8 +37,10 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
     context 'when there are competing moves' do
       let(:orders) do
         {
-          nap: build(:intended_order, :move, from_territory: t_nap, to_territory: t_ion, country: country_ita), # ITA F Nap - ION
-          tun: build(:intended_order, :move, from_territory: t_tun, to_territory: t_ion, country: country_fra)  # FRA F Tun - ION
+          # ITA F Nap - ION
+          nap: build(:intended_order, :move, unit_position: nap_up, to_territory: destination),
+          # FRA F Tun - ION
+          tun: build(:intended_order, :move, unit_position: tun_up, to_territory: destination)
         }
       end
 
@@ -48,7 +53,8 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
       context 'when one has support and other does not' do
         let(:orders) do
           super().merge(
-            apu: build(:intended_order, :support_move, assistance_territory: t_apu, from_territory: t_nap, to_territory: t_ion, country: country_ita) # ITA F Apu (S) F Nap - ION
+            # ITA F Apu (S) F Nap - ION
+            apu: build(:intended_order, :support_move, unit_position: apu_up, assistance_territory: t_apu, from_territory: t_nap, to_territory: t_ion)
           )
         end
 
@@ -61,9 +67,12 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
         context 'when one has more support' do
           let(:orders) do
             super().merge(
-              apu: build(:intended_order, :support_move, assistance_territory: t_apu, from_territory: t_nap, to_territory: t_ion, country: country_ita), # ITA F Apu (S) F Nap - ION
-              adr: build(:intended_order, :support_move, assistance_territory: t_adr, from_territory: t_nap, to_territory: t_ion, country: country_ita), # ITA F Adr (S) F Nap - ION
-              tys: build(:intended_order, :support_move, assistance_territory: t_tys, from_territory: t_nap, to_territory: t_ion, country: country_fra)  # FRA F Tys (S) F Nap - ION
+              # ITA F Apu (S) F Nap - ION
+              apu: build(:intended_order, :support_move, unit_position: tun_up, assistance_territory: t_apu, from_territory: t_nap, to_territory: t_ion),
+              # ITA F Adr (S) F Nap - ION
+              adr: build(:intended_order, :support_move, unit_position: adr_up, assistance_territory: t_adr, from_territory: t_nap, to_territory: t_ion),
+              # FRA F Tys (S) F Nap - ION
+              tys: build(:intended_order, :support_move, unit_position: tys_up, assistance_territory: t_tys, from_territory: t_nap, to_territory: t_ion)
             )
           end
 
@@ -74,10 +83,16 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
 
         context 'when the moves are equal in strength' do
           let(:orders) do
-            super().merge(
-              apu: build(:intended_order, :support_move, assistance_territory: t_apu, from_territory: t_nap, to_territory: t_ion, country: country_ita), # ITA F Apu (S) F Nap - ION
-              tys: build(:intended_order, :support_move, assistance_territory: t_tys, from_territory: t_nap, to_territory: t_ion, country: country_fra)  # FRA F Tys (S) F Nap - ION
-            )
+            {
+              # ITA F Nap - ION
+              nap: build(:intended_order, :move, unit_position: nap_up, from_territory: t_nap, to_territory: destination),
+              # ITA F Apu (S) F Nap - ION
+              apu: build(:intended_order, :support_move, unit_position: apu_up, assistance_territory: t_apu, from_territory: t_nap, to_territory: destination),
+              # FRA F Tun - ION
+              tun: build(:intended_order, :move, unit_position: tun_up, from_territory: t_tun, to_territory: destination),
+              # FRA F Tys (S) F Tun - ION
+              tys: build(:intended_order, :support_move, unit_position: tys_up, assistance_territory: t_tys, from_territory: t_tun, to_territory: destination)
+            }
           end
 
           it 'returns nil as they bounce' do
@@ -91,12 +106,19 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
   describe '#moves_to' do
     subject { ios.moves_to(destination) }
 
+    let(:nap_u) { build(:unit, :fleet, game:, country: country_ita) }
+    let(:nap_up) { build(:unit_position, unit: nap_u, turn:, territory: t_nap) }
+    let(:eas_u) { build(:unit, :fleet, game:, country: country_ita) }
+    let(:eas_up) { build(:unit_position, unit: eas_u, turn:, territory: t_eas) }
+
     context 'when the destination has moves to it' do
       let(:destination) { t_ion }
       let(:orders) do
         {
-          nap: build(:intended_order, :move, from_territory: t_nap, to_territory: t_ion, country: country_ita), # F NAP - ION
-          eas: build(:intended_order, :move, from_territory: t_eas, to_territory: t_ion, country: country_ita) # F EAS - ION
+          # F NAP - ION
+          nap: build(:intended_order, :move, turn:, unit_position: nap_up, to_territory: t_ion),
+          # F EAS - ION
+          eas: build(:intended_order, :move, turn:, unit_position: eas_up, to_territory: t_ion)
         }
       end
 
@@ -109,7 +131,8 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
       let(:destination) { t_aeg }
       let(:orders) do
         {
-          nap: build(:intended_order, :move, from_territory: t_nap, to_territory: t_ion, country: country_ita) # F NAP - ION
+          # F NAP - ION
+          nap: build(:intended_order, :move, turn:, unit_position: nap_up, to_territory: t_ion)
         }
       end
 
@@ -122,11 +145,17 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
   describe '#from' do
     subject { ios.from(from) }
 
+    let(:nap_u) { build(:unit, :fleet, game:, country: country_ita) }
+    let(:nap_up) { build(:unit_position, unit: nap_u, turn:, territory: t_nap) }
+    let(:eas_u) { build(:unit, :fleet, game:, country: country_ita) }
+    let(:eas_up) { build(:unit_position, unit: eas_u, turn:, territory: t_eas) }
     let(:from) { t_nap }
     let(:orders) do
       {
-        nap: build(:intended_order, :move, from_territory: t_nap, to_territory: t_ion, country: country_ita), # F NAP - ION
-        eas: build(:intended_order, :move, from_territory: t_eas, to_territory: t_ion, country: country_ita) # F EAS - ION
+        # F NAP - ION
+        nap: build(:intended_order, :move, turn:, unit_position: nap_up, to_territory: t_ion),
+        # F EAS - ION
+        eas: build(:intended_order, :move, turn:, unit_position: eas_up, to_territory: t_ion)
       }
     end
 
@@ -150,10 +179,12 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
   describe '#hold_strength_for' do
     subject { ios.hold_strength(territory) }
 
+    let(:nap_up) { build(:unit_position, turn:, country: country_ita, territory: t_nap) }
     let(:territory) { t_ion }
     let(:orders) do
       {
-        nap: build(:intended_order, :hold, from_territory: t_nap, country: country_ita) # F Nap H - supported hold by Rom
+        # F Nap H - supported hold by Rom
+        nap: build(:intended_order, :hold, turn:, unit_position: nap_up, from_territory: t_nap)
       }
     end
 
@@ -163,7 +194,8 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
       context 'when the unit is moving' do
         let(:orders) do
           super().merge(
-            nap: build(:intended_order, :move, from_territory: t_nap, to_territory: t_ion, country: country_ita) # F Nap -> F Ion
+            # F Nap -> F Ion
+            nap: build(:intended_order, :move, turn:, unit_position: nap_up, to_territory: t_ion)
           )
         end
 
@@ -180,10 +212,14 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
         end
 
         context 'when the unit is supported' do
+          let(:rom_up) { build(:unit_position, turn:, country: country_ita, territory: t_rom) }
+          let(:ion_up) { build(:unit_position, turn:, country: country_ita, territory: t_ion) }
           let(:orders) do
             super().merge(
-              rom: build(:intended_order, :support_hold, assistance_territory: t_rom, from_territory: t_nap, country: country_ita), # F Rom (S) F Nap H
-              ion: build(:intended_order, :support_hold, assistance_territory: t_ion, from_territory: t_nap, country: country_ita) # F ION (S) F Nap H
+              # F Rom (S) F Nap H
+              rom: build(:intended_order, :support_hold, unit_position: rom_up, turn:, assistance_territory: t_rom, from_territory: t_nap),
+              # F ION (S) F Nap H
+              ion: build(:intended_order, :support_hold, unit_position: ion_up, turn:, assistance_territory: t_ion, from_territory: t_nap)
             )
           end
 
@@ -194,9 +230,11 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
           end
 
           context 'when one support is cut' do
+            let(:tus_up) { build(:unit_position, turn:, territory: t_tus, country: country_fra) }
             let(:orders) do
               super().merge(
-                tus: build(:intended_order, :move, from_territory: t_tus, to_territory: t_rom, country: country_fra) # FRA F Tus -> F Rom
+                # FRA F Tus -> F Rom
+                tus: build(:intended_order, :move, turn:, unit_position: tus_up, from_territory: t_tus, to_territory: t_rom)
               )
             end
 
@@ -206,10 +244,14 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
           end
 
           context 'when all support is cut' do
+            let(:tus_up) { build(:unit_position, turn:, country: country_fra, territory: t_tus) }
+            let(:tun_up) { build(:unit_position, turn:, country: country_fra, territory: t_tun) }
             let(:orders) do
               super().merge(
-                tus: build(:intended_order, :move, from_territory: t_tus, to_territory: t_rom, country: country_fra), # FRA F Tus -> F Rom
-                tun: build(:intended_order, :move, from_territory: t_tun, to_territory: t_ion, country: country_fra) # FRA F Tun -> F ION
+                # FRA F Tus -> F Rom
+                tus: build(:intended_order, :move, turn:, unit_position: tus_up, to_territory: t_rom),
+                # FRA F Tun -> F ION
+                tun: build(:intended_order, :move, turn:, unit_position: tun_up, to_territory: t_ion)
               )
             end
 
@@ -231,13 +273,17 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
   end
 
   describe '#move_strength_to' do
-    subject { ios.move_strength_to(to: destination, country: country_ita) }
+    subject { ios.move_strength_to(from: origin, to: destination) }
 
+    let(:nap_u) { build(:unit, :fleet, game:, country: country_ita) }
+    let(:nap_up) { build(:unit_position, unit: nap_u, turn:, territory: t_nap) }
+    let(:origin) { t_nap }
     let(:destination) { t_ion }
 
     let(:orders) do
       {
-        nap: build(:intended_order, :move, from_territory: t_nap, to_territory: t_ion, country: country_ita) # F Nap - ION
+        # F Nap - ION
+        nap: build(:intended_order, :move, turn:, unit: nap_u, unit_position: nap_up, from_territory: t_nap, to_territory: t_ion, country: country_ita)
       }
     end
 
@@ -248,10 +294,17 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
     end
 
     context 'when unit is supported' do
+      let(:tys_u) { build(:unit, :fleet, game:, country: country_ita) }
+      let(:tys_up) { build(:unit_position, unit: nap_u, turn:, territory: t_tys) }
+      let(:apu_u) { build(:unit, :fleet, game:, country: country_ita) }
+      let(:apu_up) { build(:unit_position, unit: apu_u, turn:, territory: t_apu) }
+
       let(:orders) do
         super().merge(
-          tys: build(:intended_order, :support_move, from_territory: t_nap, to_territory: t_ion, assistance_territory: t_tys, country: country_ita), # F TYS (S) F Nap - ION
-          apu: build(:intended_order, :support_move, from_territory: t_nap, to_territory: t_ion, assistance_territory: t_apu, country: country_ita) # F Apu (S) F Nap - ION
+          # F TYS (S) F Nap - ION
+          tys: build(:intended_order, :support_move, turn:, unit: tys_u, unit_position: tys_up, from_territory: t_nap, to_territory: t_ion, assistance_territory: t_tys, country: country_ita),
+          # F Apu (S) F Nap - ION
+          apu: build(:intended_order, :support_move, turn:, unit: apu_u, unit_position: apu_up, from_territory: t_nap, to_territory: t_ion, assistance_territory: t_apu, country: country_ita)
         )
       end
 
@@ -262,9 +315,12 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
       end
 
       context 'when one support is cut' do
+        let(:tun_u) { build(:unit, :fleet, game:, country: country_fra) }
+        let(:tun_up) { build(:unit_position, unit: tun_u, turn:, territory: t_tun) }
         let(:orders) do
           super().merge(
-            tun: build(:intended_order, :move, from_territory: t_tun, to_territory: t_tys, country: country_fra) # FRA F Tun -> TYS
+            # FRA F Tun -> TYS
+            tun: build(:intended_order, :move, turn:, unit: tun_u, unit_position: tun_up, from_territory: t_tun, to_territory: t_tys, country: country_fra)
           )
         end
 
@@ -274,10 +330,16 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
       end
 
       context 'when both supports are cut' do
+        let(:tun_u) { build(:unit, :fleet, game:, country: country_fra) }
+        let(:tun_up) { build(:unit_position, unit: tun_u, turn:, territory: t_tun) }
+        let(:ven_u) { build(:unit, :fleet, game:, country: country_fra) }
+        let(:ven_up) { build(:unit_position, unit: ven_u, turn:, territory: t_ven) }
         let(:orders) do
           super().merge(
-            tun: build(:intended_order, :move, from_territory: t_tun, to_territory: t_tys, country: country_fra), # FRA F Tun -> TYS
-            ven: build(:intended_order, :move, from_territory: t_ven, to_territory: t_apu, country: country_fra) # FRA F Ven -> Apu
+            # FRA F Tun -> TYS
+            tun: build(:intended_order, :move, turn:, unit: tun_u, unit_position: tun_up, from_territory: t_tun, to_territory: t_tys, country: country_fra),
+            # FRA F Ven -> Apu
+            ven: build(:intended_order, :move, turn:, unit: ven_u, unit_position: ven_up, from_territory: t_ven, to_territory: t_apu, country: country_fra)
           )
         end
 
@@ -289,34 +351,39 @@ describe Entities::IntendedOrders, countries: :classic, territories: :classic do
   end
 
   describe '#support_cut?' do
-    subject { ios.support_cut?(at: territory, country: country_ita) }
+    subject { ios.support_cut?(at: supporting_territory, country: country_ita) }
 
-    let(:territory) { t_apu }
+    let(:supporting_territory) { t_apu }
+    let(:nap_up) { build(:unit_position, turn:, country: country_ita, territory: t_nap) }
+    let(:apu_up) { build(:unit_position, turn:, country: country_ita, territory: t_apu) }
     let(:orders) do
       {
-        nap: build(:intended_order, :hold, from_territory: t_nap, country: country_ita), # F Nap H
-        apu: build(:intended_order, :support_hold, from_territory: t_nap, assistance_territory: t_apu, country: country_ita) # F Apu (S) F Nap H
+        # F Nap H
+        nap: build(:intended_order, :hold, turn:, unit_position: nap_up, from_territory: t_nap),
+        # F Apu (S) F Nap H
+        apu: build(:intended_order, :support_hold, turn:, unit_position: apu_up, from_territory: t_nap, to_territory: t_nap, assistance_territory: t_apu)
       }
     end
 
-    context 'when there is no support at the territory' do
-      let(:territory) { t_ion }
+    context 'when there is no support from the specified territory' do
+      let(:supporting_territory) { t_ion }
 
       it { is_expected.to be_falsey }
     end
 
     context 'when support is not cut' do
-      let(:territory) { t_apu }
+      let(:supporting_territory) { t_apu }
 
       it { is_expected.to be_falsey }
     end
 
     context 'when support is cut' do
-      let(:territory) { t_apu }
-
+      let(:supporting_territory) { t_apu }
+      let(:ion_up) { build(:unit_position, turn:, country: country_fra, territory: t_ion) }
       let(:orders) do
         super().merge(
-          ion: build(:intended_order, :move, from_territory: t_ion, to_territory: t_apu, country: country_fra) # FRA F Ion -> Apu
+          # FRA F Ion -> Apu
+          ion: build(:intended_order, :move, turn:, unit_position: ion_up, to_territory: t_apu)
         )
       end
 

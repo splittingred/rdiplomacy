@@ -16,6 +16,8 @@ gem 'mysql2', '~> 0.5'
 gem 'puma', '~> 5.0' # Use the Puma web server [https://github.com/puma/puma]
 gem 'redis', '~> 4.0' # Use Redis adapter to run Action Cable in production
 
+gem 'devise'
+
 gem 'dry-monads'
 gem 'dry-rails', '~> 0.7'
 gem 'dry-struct'
@@ -47,6 +49,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 6.0'
   gem 'rubocop', '>= 1.7'
   gem 'rubocop-performance', '>= 0.0.1'
+  gem 'rubocop-rails'
   gem 'rubocop-rspec', '>= 2.0'
   gem 'simplecov', require: false
 end

@@ -78,12 +78,13 @@ class Unit < ApplicationRecord
   # @param [Territory] to
   # @param [Turn] turn
   # @return [Boolean]
-  #
+  # rubocop:disable Lint/UnusedMethodArgument
   def can_convoy?(from:, to:, turn:)
     # TODO: This will require being able to trace a path between two territories, and checking that the path is
     #   entirely occupied by fleets
     true
   end
+  # rubocop:enable Lint/UnusedMethodArgument
 
   ##
   # @return [Boolean]

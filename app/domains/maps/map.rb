@@ -9,14 +9,19 @@ module Maps
     delegate :territories, to: :configuration
 
     def initialize(name = 'classic')
-      @xml = Nokogiri::XML(File.open("#{Rails.root.to_s.chomp('/')}/app/configuration/maps/#{name}.svg"))
+      @xml = Nokogiri::XML(File.open(Rails.root.join("app/configuration/maps/#{name}.svg").to_s))
       @configuration = Maps::Configuration.new(name)
       super()
     end
 
+    ##
+    # @return [String]
+    #
+    # rubocop:disable Rails/OutputSafety
     def to_s
       InlineSvg::TransformPipeline.generate_html_from(@xml.to_s, {}).html_safe
     end
+    # rubocop:enable Rails/OutputSafety
 
     def add_unit(territory:, country:, type:, coast: nil)
       unit_layer = @xml.css('g#UnitLayer').first

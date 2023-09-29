@@ -89,12 +89,17 @@ module Orders
     # @param [IntendedOrder] order
     #
     def adjudicate_support_hold(orders:, order:)
-      if order.unit_dislodged?
+      supported_order = orders.from(order.from_territory)
+      if supported_order.nil?
+        order.fail!(:from_territory, :no_unit_at_supported_territory, 'Cannot support a move where no unit exists')
+      elsif order.unit_dislodged?
         order.fail!(:from_territory, :unit_dislodged, 'Cannot support a hold with a dislodged unit')
       elsif !orders.territory_occupied?(order.from_territory)
         order.fail!(:to_territory, :no_unit_at_supported_territory, 'Cannot support a hold where no unit exists')
       elsif orders.support_cut?(at: order.assistance_territory, country: order.country)
         order.fail!(:from_territory, :support_cut, 'Support cut')
+      elsif order.to_territory.abbr != supported_order.to_territory.abbr
+        order.fail!(:to_territory, :supported_unit_moved, 'Supported unit moved elsewhere')
       elsif !order.from_territory.can_be_occupied_by?(order.unit)
         order.fail!(:from_territory, :invalid_unit_type, "#{order.unit.unit_type} cannot support a hold in a territory it cannot move to")
       else
@@ -125,6 +130,7 @@ module Orders
       Success(order)
     end
 
+    # rubocop:disable Lint/UnusedMethodArgument
     ##
     # @param [Entities::IntendedOrders] orders
     # @param [IntendedOrder] order
@@ -169,5 +175,6 @@ module Orders
       # TODO: handle disbands
       Success(order)
     end
+    # rubocop:enable Lint/UnusedMethodArgument
   end
 end

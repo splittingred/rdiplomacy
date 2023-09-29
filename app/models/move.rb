@@ -41,5 +41,5 @@ class Move < ApplicationRecord
   scope :for_country, ->(country) { where(country:) }
   scope :for_order, ->(order) { where(order:) }
   scope :on_turn, ->(turn) { where(turn:) }
-  scope :for_territory, ->(territory) { where(from_territory: territory) }
+  scope :at, ->(territory) { where(from_territory: territory) }
 end

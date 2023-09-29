@@ -14,7 +14,7 @@ namespace :test_data do
     end
 
     # create game record
-    game_file = Rails.root.join('lib', 'test_cases', variant_name, '1.yml')
+    game_file = Rails.root.join('lib', 'test_cases', variant.abbr, '1.yml')
     Rails.logger.info "Loading game at #{game_file}"
     game_yml = YAML.safe_load_file(game_file)
 
@@ -30,8 +30,8 @@ namespace :test_data do
     end
 
     # load all countries + territories in memory for easier, non-repetitive loaded access
-    countries = ::Country.for_game(game).each_with_object({}) { |c, h| h[c.abbr.to_sym] = c }
-    territories = ::Territory.for_variant(variant).each_with_object({}) { |t, h| h[t.abbr.to_sym] = t }
+    countries = ::Country.for_game(game).index_by { |c| c.abbr.to_sym }
+    territories = ::Territory.for_variant(variant).index_by { |t| t.abbr.to_sym }
 
     # create users + players + countries
     game_yml['players'].each do |country_abbr, username|
@@ -51,8 +51,8 @@ namespace :test_data do
       country.save!
     end
 
-    two_years_ago = Time.current - 2.years
-    turn_length = variant_yml.fetch('turn_length', 86_400).to_i
+    two_years_ago = 2.years.ago
+    turn_length = variant.configuration.opts.turn_length
 
     # create turns + moves + orders
     game_yml['turns'].each_with_index do |turn_yml, idx|
@@ -90,7 +90,7 @@ namespace :test_data do
             next
           end
 
-          order = ::Order.for_game(game).on_turn(this_turn).for_country(order_country).for_territory(from_territory).first_or_initialize
+          order = ::Order.for_game(game).on_turn(this_turn).for_country(order_country).at(from_territory).first_or_initialize
           order.player = order_country.current_player
           order.unit_position = up
           order.from_territory = from_territory
@@ -100,7 +100,7 @@ namespace :test_data do
           order.save!
 
           ## TODO: Make this adjudicate rather than specifically writing the moves
-          move = ::Move.for_game(game).on_turn(this_turn).for_country(order_country).for_territory(from_territory).first_or_initialize
+          move = ::Move.for_game(game).on_turn(this_turn).for_country(order_country).at(from_territory).first_or_initialize
           move.player = order_country.current_player
           move.order = order
           move.unit_position = up

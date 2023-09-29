@@ -70,7 +70,10 @@ module Entities
     # @return [Integer]
     #
     def supporting_hold_strength(at)
-      @support_holds[at.abbr]&.reject { |o| support_cut?(at: o.assistance_territory, country: o.country) }&.size.to_i
+      @support_holds[at.abbr]&.reject do |o|
+        support_cut?(at: o.assistance_territory, country: o.country) || # if support is cut
+          !o.from_territory.can_be_occupied_by?(o.unit) # or the supporting unit cannot actually move to supported territory
+      end&.size.to_i
     end
 
     ##
@@ -79,35 +82,36 @@ module Entities
     # @return [IntendedOrder]
     #
     def successful_move_order_to(to)
-      winning_orders = moves_to(to).max_by_all do |o|
-        move_strength_to(to: o.to_territory, country: o.country)
-      end
-      winning_orders.size > 1 ? nil : winning_orders.first
+      winning_orders = moves_to(to).max_by_all { |o| move_strength_to(from: o.from_territory, to: o.to_territory) }
+      winning_orders.size == 1 ? winning_orders.first : nil
     end
 
     ##
     # Determine the move strength to a given territory
     #
+    # @param [Territory] from
     # @param [Territory] to
-    # @param [Country] country The country calculating move strength for
     # @return [Integer]
     #
-    def move_strength_to(to:, country:)
-      move_support_strength_to(to:, country:) + SELF_STRENGTH
+    def move_strength_to(from:, to:)
+      move_support_strength_to(from:, to:) + SELF_STRENGTH
     end
 
     ##
     # Determine the support strength of a move to a given territory. If the order of support to that territory is
     # cut by something moving against it, subtract that from the total.
     #
+    # @param [Territory|String] from
     # @param [Territory|String] to
-    # @param [Country|String] country The country calculating move support for
     # @return [Integer]
-    def move_support_strength_to(to:, country:)
+    def move_support_strength_to(from:, to:)
       to = to.abbr if to.is_a?(Territory)
-      country = country.abbr if country.is_a?(Country)
-      @support_moves[to]&.reject do |o|
-        o.country.abbr != country || support_cut?(at: o.assistance_territory, country:)
+      from = from.abbr if from.is_a?(Territory)
+
+      @support_moves[to]&.reject do |supporting_order|
+        supporting_order.from_territory.abbr != from || # the support is for the wrong unit
+          support_cut?(at: supporting_order.assistance_territory, country: supporting_order.country) || # or the support is cut
+          !supporting_order.to_territory.can_be_occupied_by?(supporting_order.unit) # or the supporting unit cannot actually move to supported territory
       end&.size.to_i || 0
     end
 

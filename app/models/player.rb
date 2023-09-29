@@ -12,10 +12,10 @@ class Player < ApplicationRecord
   belongs_to :country
   # @!attribute moves
   #   @return [ActiveRecord::Associations::CollectionProxy<Move>]
-  has_many :moves
+  has_many :moves, dependent: :destroy
   # @!attribute orders
   #   @return [ActiveRecord::Associations::CollectionProxy<Order>]
-  has_many :orders
+  has_many :orders, dependent: :destroy
 
   scope :for_game, ->(game) { where(game:) }
   scope :for_country, ->(country) { where(country:) }

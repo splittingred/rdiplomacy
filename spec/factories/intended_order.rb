@@ -6,11 +6,11 @@ FactoryBot.define do
     game { order.game }
     turn { order.turn }
     move_type { Order::TYPE_MOVE }
-    country { order.country }
+    country { unit.country || order.country }
     player { order.player }
     unit_position { order.unit_position }
-    unit { order.unit_position.unit }
-    from_territory factory: %i[territory]
+    unit { unit_position.unit || order.unit_position.unit }
+    from_territory { unit_position.territory }
     to_territory factory: %i[territory]
     assistance_territory factory: %i[territory]
     status { IntendedOrder::STATUS_PENDING }

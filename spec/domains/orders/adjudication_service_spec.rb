@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:disable RSpec/EmptyExampleGroup
-describe Orders::AdjudicationService, territories: :classic, countries: :classic do
+describe Orders::AdjudicationService, countries: :classic, territories: :classic do
   let(:service) { described_class.new }
   let(:orders) { {} }
   let(:ios) { Entities::IntendedOrders.new(orders) }
@@ -17,7 +17,7 @@ describe Orders::AdjudicationService, territories: :classic, countries: :classic
       let(:ven_unit_position) { build(:unit_position, unit: ven_unit, turn: game.current_turn, territory: t_ven) }
       let(:orders) do
         {
-          ven: build(:intended_order, :hold, game:, unit_position: ven_unit_position, unit: ven_unit, from_territory: t_ven, country: country_ita), # F VEN H
+          ven: build(:intended_order, :hold, game:, unit_position: ven_unit_position, unit: ven_unit, from_territory: t_ven, country: country_ita) # F VEN H
         }
       end
 
@@ -96,7 +96,7 @@ describe Orders::AdjudicationService, territories: :classic, countries: :classic
                   # ITA A Tri S A Ven -> Tyr
                   tri: build(:intended_order, :support_move, game:, unit_position: tri_unit_position, unit: tri_unit, from_territory: t_ven, to_territory: t_tyr, assistance_territory: t_tri, country: country_ita),
                   # GER A Mun -> Tyr
-                  mun: build(:intended_order, :move, game:, unit_position: mun_unit_position, unit: mun_unit, from_territory: t_mun, to_territory: t_tyr, country: country_ger),
+                  mun: build(:intended_order, :move, game:, unit_position: mun_unit_position, unit: mun_unit, from_territory: t_mun, to_territory: t_tyr, country: country_ger)
                   # - succeeds, 2 ITA vs 1 GER
                 }
               end
@@ -115,7 +115,7 @@ describe Orders::AdjudicationService, territories: :classic, countries: :classic
                   # GER A Mun -> Tyr
                   mun: build(:intended_order, :move, game:, unit_position: mun_unit_position, unit: mun_unit, from_territory: t_mun, to_territory: t_tyr, country: country_ger),
                   # FRA A Pie S GER A Mun -> Tyr
-                  pie: build(:intended_order, :support_move, game:, unit_position: pie_unit_position, unit: pie_unit, from_territory: t_mun, to_territory: t_tyr, assistance_territory: t_pie, country: country_fra),
+                  pie: build(:intended_order, :support_move, game:, unit_position: pie_unit_position, unit: pie_unit, from_territory: t_mun, to_territory: t_tyr, assistance_territory: t_pie, country: country_fra)
                   # - fails, 2 GER+FRA + 1 ITA
                 }
               end
@@ -139,7 +139,7 @@ describe Orders::AdjudicationService, territories: :classic, countries: :classic
         let(:orders) do
           {
             # ITA A Ven -> Tyr
-            ven: build(:intended_order, :move, game:, unit_position: ven_unit_position, unit: ven_unit, from_territory: t_ven, to_territory: t_tyr, country: country_ita),
+            ven: build(:intended_order, :move, game:, unit_position: ven_unit_position, unit: ven_unit, from_territory: t_ven, to_territory: t_tyr, country: country_ita)
           }
         end
 
@@ -163,7 +163,7 @@ describe Orders::AdjudicationService, territories: :classic, countries: :classic
           # ITA A Ven H
           ven: build(:intended_order, :hold, game:, unit_position: ven_unit_position, unit: ven_unit, from_territory: t_ven, to_territory: t_ven, country: country_ita),
           # ITA A Tyr S A Ven H
-          tyr: build(:intended_order, :support_hold, game:, unit_position: tyr_unit_position, unit: tyr_unit, from_territory: t_ven, to_territory: t_ven, assistance_territory: t_tyr, country: country_ita),
+          tyr: build(:intended_order, :support_hold, game:, unit_position: tyr_unit_position, unit: tyr_unit, from_territory: t_ven, to_territory: t_ven, assistance_territory: t_tyr, country: country_ita)
         }
       end
 
@@ -213,6 +213,23 @@ describe Orders::AdjudicationService, territories: :classic, countries: :classic
           expect(subject).to be_a_success
           expect(resulting_orders[:ven]).to be_failed
           expect(resulting_orders[:ven].errors.first.type).to eq :invalid_unit_type
+        end
+      end
+
+      context 'when the support order is for a unit that is not holding' do
+        let(:orders) do
+          {
+            # ITA A Ven -> Pie
+            ven: build(:intended_order, :move, game:, unit_position: ven_unit_position, unit: ven_unit, from_territory: t_ven, to_territory: t_pie, country: country_ita),
+            # ITA A Tyr S A Ven H
+            tyr: build(:intended_order, :support_hold, game:, unit_position: tyr_unit_position, unit: tyr_unit, from_territory: t_ven, to_territory: t_ven, assistance_territory: t_tyr, country: country_ita)
+          }
+        end
+
+        it 'fails the order' do
+          expect(subject).to be_a_success
+          expect(resulting_orders[:tyr]).to be_failed
+          expect(resulting_orders[:tyr].errors.first.type).to eq :supported_unit_moved
         end
       end
 
@@ -362,7 +379,7 @@ describe Orders::AdjudicationService, territories: :classic, countries: :classic
           # ITA A Tun -> Gre
           tun: build(:intended_order, :move, game:, unit_position: tun_unit_position, unit: tun_unit, from_territory: t_tun, to_territory: t_gre, country: country_ita),
           # ITA F ION (C) Tun -> Gre
-          ion: build(:intended_order, :convoy, game:, unit_position: ion_unit_position, unit: ion_unit, from_territory: t_tun, to_territory: t_gre, assistance_territory: t_ion, country: country_ita),
+          ion: build(:intended_order, :convoy, game:, unit_position: ion_unit_position, unit: ion_unit, from_territory: t_tun, to_territory: t_gre, assistance_territory: t_ion, country: country_ita)
         }
       end
 
@@ -391,7 +408,7 @@ describe Orders::AdjudicationService, territories: :classic, countries: :classic
             # ITA F ION (C) Tun -> Smy
             ion: build(:intended_order, :convoy, game:, unit_position: ion_unit_position, unit: ion_unit, from_territory: t_tun, to_territory: t_smy, assistance_territory: t_ion, country: country_ita),
             # ITA F AEG (C) Tun -> Smy
-            aeg: build(:intended_order, :convoy, game:, unit_position: aeg_unit_position, unit: aeg_unit, from_territory: t_tun, to_territory: t_smy, assistance_territory: t_aeg, country: country_ita),
+            aeg: build(:intended_order, :convoy, game:, unit_position: aeg_unit_position, unit: aeg_unit, from_territory: t_tun, to_territory: t_smy, assistance_territory: t_aeg, country: country_ita)
           )
         end
 

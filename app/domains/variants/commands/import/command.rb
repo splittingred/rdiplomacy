@@ -115,7 +115,7 @@ module Variants
         # @return [Failure<Error>]
         def create_borders(variant:, territories:)
           variant.map.configuration.territories.each do |territory_abbr, config|
-            puts "Creating borders for #{territory_abbr} - #{config.borders.count}"
+            Rails.logger.debug { "Creating borders for #{territory_abbr} - #{config.borders.count}" }
             config.borders.each do |border_config|
               border = ::Border
                        .for_variant(variant)

@@ -14,7 +14,7 @@ class Country < ApplicationRecord
   # @!attribute current_player
   #   @return [Player]
   #   @return [NilClass]
-  has_one :current_player, class_name: 'Player'
+  has_one :current_player, class_name: 'Player', dependent: nil
 
   scope :for_game, ->(game) { where(game:) }
   scope :by_abbr, ->(abbr) { where(abbr:) }

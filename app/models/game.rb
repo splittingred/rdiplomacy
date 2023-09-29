@@ -33,9 +33,7 @@ class Game < ApplicationRecord
   ##
   # @return [Maps::Map]
   #
-  def map
-    variant.map
-  end
+  delegate :map, to: :variant
 
   ##
   # Get the current turn for this game

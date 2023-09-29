@@ -6,10 +6,10 @@ class Turn < ApplicationRecord
   belongs_to :game
   # @!attribute moves
   #   @return [ActiveRecord::Associations::CollectionProxy<Move>]
-  has_many :moves
+  has_many :moves, dependent: :destroy
   # @!attribute orders
   #   @return [ActiveRecord::Associations::CollectionProxy<Order>]
-  has_many :orders
+  has_many :orders, dependent: :destroy
 
   scope :for_game, ->(game) { where(game:) }
   scope :by_year, ->(year) { where(year:) }

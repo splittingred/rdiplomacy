@@ -6,6 +6,8 @@ Rails.application.routes.draw do
 
   root 'games#index'
 
+  devise_for :users
+
   resources :games, only: [:index, :show] do
     scope module: :games do
       resources :maps, class: 'Games::MapsController', only: [:index, :show] do

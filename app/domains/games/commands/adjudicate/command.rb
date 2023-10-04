@@ -7,12 +7,6 @@ module Games
       # Adjudicate a given turn, resolving orders into moves
       #
       class Command < ::RDiplomacy::Command
-        # @!attribute [r] adjudication_service
-        #   @return [Orders::AdjudicationService]
-        include ::Rdiplomacy::Deps[
-          adjudication_service: 'orders.adjudication_service'
-        ]
-
         ##
         # @param [Request] request
         #
@@ -39,8 +33,12 @@ module Games
         # @return [Failure<Error>]
         #
         def adjudicate_orders(orders)
-          collection = ::Entities::IntendedOrders.new(orders)
-          adjudication_service.call(collection)
+          ios = ::Entities::IntendedOrders.new(orders)
+          # @type [IntendedOrder] order
+          ios.each do |order|
+            order.validate!(orders: ios)
+          end
+          Success(ios)
         end
 
         ##

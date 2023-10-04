@@ -8,14 +8,14 @@ FactoryBot.define do
     player { order.player }
     status { IntendedOrder::STATUS_PENDING }
 
-    from_territory { unit_position.territory }
+    from_territory { unit_position&.territory }
     to_territory { order.to_territory }
     assistance_territory { order.assistance_territory }
 
     # optional attrs
     game { turn.game || order.game }
-    turn { unit_position.turn || order.turn }
-    unit { unit_position.unit || order.unit_position.unit }
+    turn { unit_position&.turn || order.turn }
+    unit { unit_position&.unit || order.unit_position.unit }
     country { unit.country || order.country }
 
     initialize_with { IntendedOrders::Move.new(attributes) }
@@ -61,8 +61,8 @@ FactoryBot.define do
 
     trait :build do
       move_type { Order::TYPE_BUILD }
-      from_territory { unit_position.territory }
-      to_territory { unit_position.territory }
+      unit_position { nil }
+      to_territory { from_territory }
       assistance_territory { nil }
       initialize_with { IntendedOrders::Build.new(attributes) }
     end

@@ -17,8 +17,9 @@ class Turn < ApplicationRecord
   scope :current, -> { where(current: true) }
 
   STATUS_AWAITING_ORDERS = 'awaiting_orders'
-  STATUS_ADJUCATING = 'adjucating'
+  STATUS_ADJUDICATING = 'adjudicating'
   STATUS_PAUSED = 'paused'
+  STATUS_FINISHED = 'finished'
 
   ##
   # @return [Hash<Symbol,IntendedOrder>]
@@ -27,5 +28,26 @@ class Turn < ApplicationRecord
     orders.includes(game: [], turn: [], unit_position: [:unit], country: [], player: [], from_territory: [], to_territory: [], assistance_territory: []).each_with_object({}) do |order, hash|
       hash[order.from_territory.abbr.to_sym] = order.to_intended
     end
+  end
+
+  ##
+  # @return [Variants::Configuration::Season]
+  #
+  def current_season
+    game.variant.configuration.seasons[season.to_s.downcase.to_sym]
+  end
+
+  ##
+  # @return [Variants::Configuration::Season]
+  #
+  def next_turn_season
+    game.variant.configuration.seasons[current_season.next.to_sym]
+  end
+
+  ##
+  # @return [Integer]
+  #
+  def next_turn_year
+    current_season.end_of_year? ? year + 1 : year
   end
 end

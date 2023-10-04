@@ -5,12 +5,25 @@ map: "classic"
 description: "Classic Diplomacy"
 options:
   start_year: 1901
-  start_season: SPRING
+  start_season: sp
   turn_length: 86400 # 1 day
 move_types:
   hold:
     width: 75
     height: 75
+seasons:
+  sp:
+    name: "Spring"
+    next: fa
+  fa:
+    name: "Fall"
+    next: win
+  win:
+    name: "Winter"
+    next: sp
+    reconcile_units: true
+    moves_allowed: false
+    end_of_year: true
 countries:
   - name: "Austria"
     abbr: "aus"

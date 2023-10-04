@@ -11,25 +11,27 @@ module Games
         # @param [Request] request
         #
         def perform(request)
-          orders = yield fetch_intended_orders(request)
-          orders = yield adjudicate_orders(orders)
-          moves = yield resolve_orders(orders)
-          Success(moves:, orders:)
+          current_turn = yield update_current_turn(request)
+          ios = yield adjudicate_orders(current_turn.intended_orders)
+          moves = yield resolve_orders(ios)
+          new_turn = yield create_new_turn(game: request.game, current_turn:)
+          yield create_new_unit_positions(turn: new_turn, orders: ios, moves:)
+          current_turn = yield finish_current_turn(current_turn:)
+          Success(moves:, orders: ios, current_turn:, new_turn:)
         end
 
         private
 
-        ##
-        # @return [Success<Hash<Symbol, IntendedOrder>>]
-        # @return [Failure<Error>]
-        #
-        def fetch_intended_orders(request)
-          Success(request.turn.intended_orders)
+        def update_current_turn(request)
+          current_turn = request.turn
+          current_turn.status = ::Turn::STATUS_ADJUDICATING
+          # current_turn.save!
+          Success(current_turn)
         end
 
         ##
         # @param [Hash<Symbol,IntendedOrder>] orders
-        # @return [Success]
+        # @return [Success<Entities::IntendedOrders>]
         # @return [Failure<Error>]
         #
         def adjudicate_orders(orders)
@@ -67,6 +69,33 @@ module Games
             moves << move
           end
           Success(moves)
+        end
+
+        def create_new_turn(game:, current_turn:)
+          turn = Turn.new
+          turn.game = game
+          turn.season = current_turn.next_turn_season.abbr
+          turn.year = current_turn.next_turn_year
+          turn.status = ::Turn::STATUS_AWAITING_ORDERS
+          # turn.save!
+
+          Success(turn)
+        end
+
+        def create_new_unit_positions(turn:, orders:, moves:)
+          moves.each do |move|
+            # TODO: Create new unit positions, handling failed moves and dislodges
+          end
+          Success()
+        end
+
+        def finish_current_turn(current_turn:)
+          current_turn.adjucated = true
+          current_turn.adjucated_at = Time.current
+          current_turn.status = ::Turn::STATUS_FINISHED
+          current_turn.finished_at = Time.current
+          # current_turn.save!
+          Success(current_turn)
         end
       end
     end

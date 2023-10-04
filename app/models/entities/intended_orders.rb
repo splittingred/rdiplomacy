@@ -81,7 +81,7 @@ module Entities
     # @param [Territory] to
     # @return [IntendedOrder]
     #
-    def successful_move_order_to(to)
+    def winning_move_order_to(to)
       winning_orders = moves_to(to).max_by_all { |o| move_strength_to(from: o.from_territory, to: o.to_territory) }
       winning_orders.size == 1 ? winning_orders.first : nil
     end

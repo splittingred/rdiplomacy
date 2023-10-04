@@ -37,7 +37,7 @@ class Unit < ApplicationRecord
   #
   def adjacent_to?(to:, turn:)
     up = unit_positions.on_turn(turn).first
-    up&.adjacent_to?(to)
+    up&.adjacent_to?(to) || false
   end
 
   ##
@@ -49,17 +49,6 @@ class Unit < ApplicationRecord
   #
   def can_move_to?(to:, turn:)
     adjacent_to?(to:, turn:) && territory.can_be_occupied_by?(self)
-  end
-
-  ##
-  # If a unit can move to a territory, it can support a hold there.
-  #
-  # @param [Territory] at
-  # @param [Turn]
-  # @return [Boolean]
-  #
-  def can_support_hold_at?(at:, turn:)
-    can_move_to?(to: at, turn:)
   end
 
   ##

@@ -7,12 +7,9 @@ module Games
       # Adjudicate a given turn, resolving orders into moves
       #
       class Command < ::RDiplomacy::Command
-        # @!attribute [r] order_validator
-        #   @return [Orders::IntendedOrderValidator]
         # @!attribute [r] adjudication_service
         #   @return [Orders::AdjudicationService]
         include ::Rdiplomacy::Deps[
-          order_validator: 'orders.intended_order_validator',
           adjudication_service: 'orders.adjudication_service'
         ]
 
@@ -21,7 +18,6 @@ module Games
         #
         def perform(request)
           orders = yield fetch_intended_orders(request)
-          yield validate_orders(orders)
           orders = yield adjudicate_orders(orders)
           moves = yield resolve_orders(orders)
           Success(moves:, orders:)
@@ -35,18 +31,6 @@ module Games
         #
         def fetch_intended_orders(request)
           Success(request.turn.intended_orders)
-        end
-
-        ##
-        # @param [Hash<Symbol,IntendedOrder>] orders
-        # @return [Success]
-        # @return [Failure<Error>]
-        #
-        def validate_orders(orders)
-          orders.each_value do |order|
-            order_validator.call(order:)
-          end
-          Success()
         end
 
         ##

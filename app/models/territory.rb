@@ -3,6 +3,12 @@
 ##
 # Represents a territory (or place that a unit can go) in a game variant
 #
+# @!attribute id
+#   @return [Integer]
+# @!attribute name
+#   @return [String]
+# @!attribute abbr
+#   @return [String]
 class Territory < ApplicationRecord
   # @!attribute variant
   #  @return [Variant]
@@ -11,6 +17,9 @@ class Territory < ApplicationRecord
   #  @return [Territory]
   #  @return [NilClass] if this territory does not have a parent territory (e.g. not a coast sub-territory)
   belongs_to :parent_territory, class_name: 'Territory', optional: true
+
+  has_many :from_borders, class_name: 'Border', dependent: :destroy, foreign_key: :from_territory_abbr, primary_key: :abbr
+  has_many :to_borders, class_name: 'Border', dependent: :destroy, foreign_key: :to_territory_id, primary_key: :abbr
 
   scope :for_variant, ->(variant) { where(variant:) }
   scope :with_name, ->(name) { where(name:) }
@@ -33,11 +42,7 @@ class Territory < ApplicationRecord
   # @return [Array<Border>]
   #
   def borders
-    Border.for_variant(variant_id).with_territory(self).joins(
-      'INNER JOIN territories from_territories ON borders.from_territory_id = from_territories.id'
-    ).joins(
-      'INNER JOIN territories to_territories ON borders.to_territory_id = to_territories.id'
-    ).select('borders.*, from_territories.abbr as from_territory_abbr, to_territories.abbr as to_territory_abbr')
+    Border.for_variant(variant_id).with_territory(abbr)
   end
 
   ##
@@ -55,7 +60,7 @@ class Territory < ApplicationRecord
   # @return [Boolean]
   #
   def adjacent_to?(territory)
-    abbr = territory.is_a?(::Territory) ? territory.abbr : territory.to_s
+    abbr = territory.is_a?(::Territory) ? territory.abbr.to_s : territory.to_s
     border_abbrs.include?(abbr)
   end
 

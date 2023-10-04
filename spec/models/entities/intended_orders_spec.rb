@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-describe Entities::IntendedOrders, countries: :classic, territories: :classic do
+describe Entities::IntendedOrders, variant: :classic do
   let(:ios) { described_class.new(orders) }
   let(:game) { build :game }
   let(:turn) { build :turn, game: }
   let(:orders) { {} }
 
-  describe '#successful_move_order_to' do
-    subject { ios.successful_move_order_to(destination) }
+  describe '#winning_move_order_to' do
+    subject { ios.winning_move_order_to(destination) }
 
     let(:destination) { t_ion }
     let(:nap_u) { build(:unit, :fleet, game:, country: country_ita) }

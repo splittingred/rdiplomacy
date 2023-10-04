@@ -15,5 +15,13 @@ FactoryBot.define do
     trait :dislodged do
       dislodged { true }
     end
+
+    trait :army do
+      unit_type { :army }
+    end
+
+    trait :fleet do
+      unit_type { :fleet }
+    end
   end
 end

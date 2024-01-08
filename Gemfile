@@ -13,7 +13,7 @@ gem 'turbo-rails' # Hotwire's SPA-like page accelerator [https://turbo.hotwired.
 
 gem 'bootsnap', require: false # Reduces boot times through caching; required in config/boot.rb
 gem 'mysql2', '~> 0.5'
-gem 'puma', '~> 5.0' # Use the Puma web server [https://github.com/puma/puma]
+gem 'puma', '~> 5.6' # Use the Puma web server [https://github.com/puma/puma]
 gem 'redis', '~> 4.0' # Use Redis adapter to run Action Cable in production
 
 # user auth
